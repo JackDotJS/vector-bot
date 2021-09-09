@@ -1,2 +1,7 @@
 /.local
 node_modules
+/cfg/bot.json
+/logs/*
+!/logs/.gitkeep
+/crashlogs/*
+!/crashlogs/.gitkeep
