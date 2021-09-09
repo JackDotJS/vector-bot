@@ -32,15 +32,17 @@ function preinit() {
   env.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
   env.log.stream = fs.createWriteStream(`./logs/${env.log.filename}.log`);
 
-  // if the bot has restarted more than x times within the past hour, print a warning.
-  if (resetcheck.resets >= cfg.resetcheck.minimum_reset_warn && !env.debug) {
-    log(`[PREINIT]: Unusually high client reset count: ${resetcheck.resets}`, `warn`);
-  }
+  if (!env.debug) {
+    // if the bot has restarted more than x times within the past hour, print a warning.
+    if (resetcheck.resets >= cfg.resetcheck.min_reset_warning) {
+      log(`[PREINIT]: Unusually high client reset count: ${resetcheck.resets}`, `warn`);
+    }
 
-  // if the bot has restarted more than x times within the past hour, stop.
-  if (resetcheck.resets >= cfg.resetcheck.max_resets_per_hour) {
-    log(`[PREINIT]: Potential boot loop detected, shutting down for safety.`, `warn`);
-    return exit(18);
+    // if the bot has restarted more than x times within the past hour, stop.
+    if (resetcheck.resets >= cfg.resetcheck.max_resets_per_hour) {
+      log(`[PREINIT]: Potential boot loop detected, shutting down for safety.`, `warn`);
+      return exit(18);
+    }
   }
 
   init();
