@@ -3,7 +3,6 @@
  */
 
 const child = require(`child_process`);
-const readline = require(`readline`);
 const fs = require(`fs`);
 const util = require(`util`);
 const AZip = require(`adm-zip`);
@@ -27,7 +26,9 @@ const resetcheck = {
 
 // get launch options from setup manager before starting
 module.exports = (data) => {
-  opts.debug = data.debug;
+  if (data != null) { 
+    opts.debug = data.debug;
+  }
 
   preinit();
 };
@@ -40,16 +41,64 @@ function preinit() {
   opts.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
   opts.log.stream = fs.createWriteStream(`./logs/${opts.log.filename}.log`);
 
-  // If the bot has restarted more than x times within the past hour, print a warning.
+  // if the bot has restarted more than x times within the past hour, print a warning.
   if (resetcheck.resets >= cfg.resetcheck.minimum_reset_warn && !opts.debug) {
     log(`[PREINIT]: Unusually high client reset count: ${resetcheck.resets}`, `warn`);
   }
 
-  // If the bot has restarted more than x times within the past hour, stop.
+  // if the bot has restarted more than x times within the past hour, stop.
   if (resetcheck.resets >= cfg.resetcheck.max_resets_per_hour) {
     log(`[PREINIT]: Potential boot loop detected, shutting down for safety.`, `warn`);
     return exit(18);
   }
+
+  init();
+}
+
+function init() {
+  log(`Launching Vector...`, `info`);
+
+  // start bot
+  const bot = child.spawn(`node`, [`modules/core/app.js`, opts.debug, opts.log.filename], {
+    stdio: [`pipe`, `pipe`, `pipe`, `ipc`]
+  });
+
+  bot.stdout.on(`data`, (data) => {
+    log(data, undefined);
+  });
+
+  bot.stderr.on(`data`, (data) => {
+    log(data, `fatal`);
+  });
+
+  bot.on(`message`, (data) => {
+    if (data == null || data.constructor !== Object || data.t == null) {
+      return log(util.inspect(data)); // to the debugeon with you
+    }
+
+    switch (data.t) {
+      // will probably add more types later
+      case `READY`:
+        log(`Bot ready`);
+        if (opts.recovery.log != null) {
+          // send crash data
+          const payload = {
+            t: `CRASHLOG`,
+            c: opts.recovery.log
+          };
+
+          bot.send(payload, (err) => {
+            if (err) return log(`Failed to send payload to child process: ` + err.stack, `error`);
+
+            // once finished, clear crash data so it's not sent again during next scheduled restart.
+            opts.recovery.log = null;
+          });
+        }
+        break;
+      default:
+        log(util.inspect(data)); // to the debugeon with you... again
+    }
+  });
 }
 
 function exit(code) {
