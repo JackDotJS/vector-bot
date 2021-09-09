@@ -24,15 +24,6 @@ const resetcheck = {
   }, 1000)
 };
 
-// get launch options from setup manager before starting
-module.exports = (data) => {
-  if (data != null) { 
-    mem.debug = data.debug;
-  }
-
-  preinit();
-};
-
 function preinit() {
   console.clear();
 
@@ -59,7 +50,7 @@ function init() {
   log(`Launching Vector...`, `info`);
 
   // start bot
-  const bot = child.spawn(`node`, [`modules/core/app.js`, mem.debug, mem.log.filename], {
+  const bot = child.spawn(`node`, [`vmodules/core/app.js`, mem.debug, mem.log.filename], {
     stdio: [`pipe`, `pipe`, `pipe`, `ipc`]
   });
 
@@ -182,3 +173,5 @@ function exit(code) {
     preinit();
   }, timeout);
 }
+
+preinit();

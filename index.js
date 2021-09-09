@@ -3,6 +3,7 @@
  */
 
 const readline = require(`readline`);
+const mem = require(`./vmodules/core/memory.js`);
 const pkg = require(`./package.json`);
 
 process.title = `Vector Bot ${pkg.version}`;
@@ -11,10 +12,6 @@ const cli = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-
-const opts = {
-  debug: false,
-};
 
 // theres probably a better way to do this
 
@@ -32,12 +29,13 @@ function q2() {
   console.clear();
 
   console.log([
-    `Debug mode enables "DEBUG" level log messages and places the bot into a "development mode", which only allows input from whitelisted users.`
+    `Debug mode enables "DEBUG" level log messages and places the bot into a "development mode", which only allows input from whitelisted users.`,
+    ``
   ].join(`\n`));
 
   cli.question(`ENABLE DEBUG MODE [Y/N]`, (res) => {
     if (res.trim().toLowerCase() === `y`) {
-      opts.debug = true;
+      mem.debug = true;
       return start();
     }
     if (res.trim().toLowerCase() === `n`) return start();
@@ -46,5 +44,5 @@ function q2() {
 }
 
 function start() {
-  require(`./vmodules/core/boot.js`)(opts);
+  require(`./vmodules/core/boot.js`);
 }
