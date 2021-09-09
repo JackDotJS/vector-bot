@@ -4,9 +4,41 @@
 
 const chalk = require(`chalk`);
 const util = require(`util`);
-const mem = require(`./memory.js`);
+const env = require(`./envmem.js`);
+
+const getSrc = () => {
+  const trace = new Error().stack;
+  const match = trace.split(`\n`)[2].match(/(?<=at\s|\()([^(]*):(\d+):(\d+)\)?$/);
+
+  if (match != null && match.length >= 4) {
+    const file_name = match[1].replace(process.cwd(), `.`).replace(/\\/g, `/`);
+    const line = match[2];
+    const column = match[3];
+
+    return `${file_name}:${line}:${column}`;
+  }
+
+  return;
+};
 
 module.exports = (content, level, file) => {
+  if (process.send) {
+    if (file == null) {
+      const result = getSrc();
+
+      if (result) file = result;
+    }
+
+    return process.send({
+      t: `LOG`,
+      c: {
+        content,
+        level,
+        file
+      }
+    });
+  }
+
   const now = new Date();
   const hh = now.getUTCHours().toString().padStart(2, `0`);
   const mm = now.getUTCMinutes().toString().padStart(2, `0`);
@@ -34,16 +66,9 @@ module.exports = (content, level, file) => {
   };
 
   if (file == null) {
-    const trace = new Error().stack;
-    const match = trace.split(`\n`)[2].match(/(?<=at\s|\()([^(]*):(\d+):(\d+)\)?$/);
+    const result = getSrc();
 
-    if (match != null && match.length >= 4) {
-      const file_name = match[1].replace(process.cwd(), `.`).replace(/\\/g, `/`);
-      const line = match[2];
-      const column = match[3];
-
-      file_path.content = `${file_name}:${line}:${column}`;
-    }
+    if (result) file_path.content = result;
   }
 
   if (typeof level === `string`) {
@@ -69,7 +94,7 @@ module.exports = (content, level, file) => {
         message.color = chalk.whiteBright;
         break;
       default:
-        if (!mem.debug) return;
+        if (!env.debug) return;
     }
   }
 
@@ -96,5 +121,5 @@ module.exports = (content, level, file) => {
   const terminal2 = message.color(message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`));
 
   console.log(terminal1 + terminal2);
-  if (mem.log.stream) mem.log.stream.write(plain1 + plain2);
+  if (env.log.stream) env.log.stream.write(plain1 + plain2);
 };

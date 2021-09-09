@@ -3,12 +3,12 @@
  */
 
 const readline = require(`readline`);
-const mem = require(`./vmodules/core/memory.js`);
+const env = require(`./vmodules/core/envmem.js`);
 const pkg = require(`./package.json`);
 
 process.title = `Vector Bot ${pkg.version}`;
 
-const cli = readline.createInterface({
+env.cli = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
@@ -18,7 +18,7 @@ const cli = readline.createInterface({
 (function q1() {
   console.clear();
 
-  cli.question(`START VECTOR [Y/N]`, (res) => {
+  env.cli.question(`START VECTOR [Y/N]`, (res) => {
     if (res.trim().toLowerCase() === `y`) return q2();
     if (res.trim().toLowerCase() === `n`) return process.exit();
     q1();
@@ -33,9 +33,9 @@ function q2() {
     ``
   ].join(`\n`));
 
-  cli.question(`ENABLE DEBUG MODE [Y/N]`, (res) => {
+  env.cli.question(`ENABLE DEBUG MODE [Y/N]`, (res) => {
     if (res.trim().toLowerCase() === `y`) {
-      mem.debug = true;
+      env.debug = true;
       return start();
     }
     if (res.trim().toLowerCase() === `n`) return start();
