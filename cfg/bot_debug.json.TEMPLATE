@@ -1,0 +1,9 @@
+{
+  "dev": {
+    "discord_user_id": "",
+    "exec": {
+      "verbose": true,
+      "inspect_depth": 2
+    }
+  }
+}
