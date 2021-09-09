@@ -4,6 +4,8 @@
 
 if (!process.send) throw new Error(`Cannot run standalone.`);
 
+const djs = require(`discord.js`);
+const util = require(`util`);
 const Vector = require(`../classes/client.js`);
 const log = require(`./log.js`);
 
@@ -15,7 +17,12 @@ const djs_opts = {
       name: `assets load 🔄`
     }
   },
-  disableMentions: `everyone` // remove this line to die instantly
+  disableMentions: `everyone`, // remove this line to die instantly
+  intents: [
+    djs.Intents.FLAGS.GUILDS,
+    djs.Intents.FLAGS.GUILD_MESSAGES,
+    djs.Intents.FLAGS.DIRECT_MESSAGES
+  ]
 };
 
 const vec_opts = {
@@ -33,4 +40,10 @@ bot.login(bot.keys.discord).catch(err => {
   setTimeout(() => {
     process.exit(1);
   }, (1000 * 60 * 5));
+});
+
+// Bot Ready
+
+bot.on(`ready`, () => {
+  log(`Successfully connected to Discord API.`, `info`);
 });
