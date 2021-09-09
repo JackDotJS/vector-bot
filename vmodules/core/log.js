@@ -73,7 +73,7 @@ module.exports = (content, level, file) => {
     }
   }
 
-  if (typeof m !== `string`) {
+  if (typeof content !== `string`) {
     message.color = chalk.yellowBright;
     if (content instanceof Error) {
       message.content = content.stack;
