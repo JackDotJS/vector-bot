@@ -1,0 +1,55 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-console": "off",
+    "indent": [
+      "warn",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "quotes": [
+      "warn",
+      "backtick"
+    ],
+    "semi": [
+      "warn",
+      "always"
+    ],
+    "space-before-blocks": [
+      "warn",
+      {
+        "functions": "always",
+        "keywords": "always",
+        "classes": "always"
+      }
+    ],
+    "prefer-const": [
+      "warn",
+      {
+        "destructuring": "any",
+        "ignoreReadBeforeAssign": false
+      }
+    ],
+    "no-unused-vars": "warn",
+    "no-var": "warn",
+    "require-atomic-updates": "off",
+    "no-empty": "off",
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": false
+      }
+    ],
+    "no-case-declarations": 0
+  }
+}

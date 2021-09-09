@@ -1,0 +1,32 @@
+{
+  "name": "vector-bot",
+  "version": "0.1.0-V1",
+  "description": "A Discord bot for advanced moderation & server management.",
+  "homepage": "https://discord.gg/s5nQBxFPp2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JackDotJS/vector-bot"
+  },
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.4.13",
+    "chalk": "^4.1.1",
+    "chokidar": "^3.5.1",
+    "discord.js": "^13.1.0",
+    "file-type": "^12.4.2",
+    "gifwrap": "^0.9.2",
+    "iso-639-1": "^2.1.9",
+    "jaro-winkler": "^0.2.8",
+    "jimp": "^0.16.1",
+    "nedb-promises": "^5.0.0",
+    "node-fetch": "^2.6.1",
+    "string-similarity": "^3.0.0",
+    "timeago.js": "^4.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.27.0"
+  }
+}
