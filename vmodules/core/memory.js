@@ -1,3 +1,7 @@
+/**
+ * VECTOR :: MEMORY CORE
+ */
+
 module.exports = {
   debug: false,
   log: {

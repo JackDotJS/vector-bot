@@ -4,7 +4,7 @@
 
 const chalk = require(`chalk`);
 const util = require(`util`);
-const opts = require(`./envopts.js`);
+const mem = require(`./memory.js`);
 
 module.exports = (content, level, file) => {
   const now = new Date();
@@ -69,7 +69,7 @@ module.exports = (content, level, file) => {
         message.color = chalk.whiteBright;
         break;
       default:
-        if (!opts.debug) return;
+        if (!mem.debug) return;
     }
   }
 
@@ -96,5 +96,5 @@ module.exports = (content, level, file) => {
   const terminal2 = message.color(message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`));
 
   console.log(terminal1 + terminal2);
-  if (opts.log.stream) opts.log.stream.write(plain1 + plain2);
+  if (mem.log.stream) mem.log.stream.write(plain1 + plain2);
 };

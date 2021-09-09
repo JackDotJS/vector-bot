@@ -46,5 +46,5 @@ function q2() {
 }
 
 function start() {
-  require(`./vmodules/base/bmanager.js`)(opts);
+  require(`./vmodules/core/boot.js`)(opts);
 }

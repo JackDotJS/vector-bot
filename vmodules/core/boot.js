@@ -8,7 +8,7 @@ const util = require(`util`);
 const AZip = require(`adm-zip`);
 const cfg = require(`../../cfg/bot.json`);
 const pkg = require(`../../package.json`);
-const opts = require(`./envopts.js`);
+const mem = require(`./memory.js`);
 const log = require(`./log.js`);
 
 // ensures bot doesnt end up in a boot loop
@@ -27,7 +27,7 @@ const resetcheck = {
 // get launch options from setup manager before starting
 module.exports = (data) => {
   if (data != null) { 
-    opts.debug = data.debug;
+    mem.debug = data.debug;
   }
 
   preinit();
@@ -38,11 +38,11 @@ function preinit() {
 
   process.title = `Vector Bot ${pkg.version} | Initializing...`;
 
-  opts.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
-  opts.log.stream = fs.createWriteStream(`./logs/${opts.log.filename}.log`);
+  mem.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
+  mem.log.stream = fs.createWriteStream(`./logs/${mem.log.filename}.log`);
 
   // if the bot has restarted more than x times within the past hour, print a warning.
-  if (resetcheck.resets >= cfg.resetcheck.minimum_reset_warn && !opts.debug) {
+  if (resetcheck.resets >= cfg.resetcheck.minimum_reset_warn && !mem.debug) {
     log(`[PREINIT]: Unusually high client reset count: ${resetcheck.resets}`, `warn`);
   }
 
@@ -59,7 +59,7 @@ function init() {
   log(`Launching Vector...`, `info`);
 
   // start bot
-  const bot = child.spawn(`node`, [`modules/core/app.js`, opts.debug, opts.log.filename], {
+  const bot = child.spawn(`node`, [`modules/core/app.js`, mem.debug, mem.log.filename], {
     stdio: [`pipe`, `pipe`, `pipe`, `ipc`]
   });
 
@@ -80,18 +80,18 @@ function init() {
       // will probably add more types later
       case `READY`:
         log(`Bot ready`);
-        if (opts.recovery.log != null) {
+        if (mem.recovery.log != null) {
           // send crash data
           const payload = {
             t: `CRASHLOG`,
-            c: opts.recovery.log
+            c: mem.recovery.log
           };
 
           bot.send(payload, (err) => {
             if (err) return log(`Failed to send payload to child process: ` + err.stack, `error`);
 
             // once finished, clear crash data so it's not sent again during next scheduled restart.
-            opts.recovery.log = null;
+            mem.recovery.log = null;
           });
         }
         break;
@@ -103,7 +103,7 @@ function init() {
 
 function exit(code) {
   resetcheck.resets++;
-  opts.log.stream.end();
+  mem.log.stream.end();
 
   let exit = true;
   let timeout = 500;
@@ -117,7 +117,7 @@ function exit(code) {
     case 1:
       log(`Vector seems to have crashed. Restarting...`, `info`);
       exit = false;
-      if (opts.debug) timeout = 5000;
+      if (mem.debug) timeout = 5000;
       break;
     case 2:
       log(`Bash Error.`, `fatal`);
@@ -168,11 +168,11 @@ function exit(code) {
 
   setTimeout(() => {
     if (report) {
-      const crashlog = `../../crashlogs/${opts.log.filename}.log`;
+      const crashlog = `../../crashlogs/${mem.log.filename}.log`;
 
-      fs.copyFileSync(`../../logs/${opts.log.filename}.log`, crashlog);
+      fs.copyFileSync(`../../logs/${mem.log.filename}.log`, crashlog);
 
-      opts.recovery.log = crashlog;
+      mem.recovery.log = crashlog;
     }
 
     if (exit) {
