@@ -1,3 +1,7 @@
+/**
+ * VECTOR :: ASSET MANAGER
+ */
+
 const mem = require(`../core/memory.js`);
 const log = require(`../util/logger.js`).write;
 

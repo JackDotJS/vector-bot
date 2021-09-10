@@ -50,6 +50,9 @@ function q2() {
 function start() {
   cli.close();
 
+  // this was only really done to pass options slightly easily
+  // using a child process for this is probably immensely overkill
+  // idk who cares lol
   const sm = child.spawn(`node`, [`vmodules/managers/shard_manager.js`, JSON.stringify(opts)], {
     stdio: `inherit`
   });
