@@ -4,10 +4,8 @@
 
 const chalk = require(`chalk`);
 const util = require(`util`);
-const env = require(`./envmem.js`);
 
-const getSrc = () => {
-  const trace = new Error().stack;
+function getSrc(trace) {
   const match = trace.split(`\n`)[2].match(/(?<=at\s|\()([^(]*):(\d+):(\d+)\)?$/);
 
   if (match != null && match.length >= 4) {
@@ -19,12 +17,19 @@ const getSrc = () => {
   }
 
   return;
+}
+
+const opts = {
+  debug: false,
+  stream: null
 };
 
-module.exports = (content, level, file) => {
+exports.opts = opts;
+
+exports.write = (content, level, file) => {
   if (process.send) {
     if (file == null) {
-      const result = getSrc();
+      const result = getSrc(new Error().stack);
 
       if (result) file = result;
     }
@@ -66,7 +71,7 @@ module.exports = (content, level, file) => {
   };
 
   if (file == null) {
-    const result = getSrc();
+    const result = getSrc(new Error().stack);
 
     if (result) file_path.content = result;
   }
@@ -94,7 +99,7 @@ module.exports = (content, level, file) => {
         message.color = chalk.whiteBright;
         break;
       default:
-        if (!env.debug) return;
+        if (!opts.debug) return;
     }
   }
 
@@ -121,5 +126,5 @@ module.exports = (content, level, file) => {
   const terminal2 = message.color(message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`));
 
   console.log(terminal1 + terminal2);
-  if (env.log.stream) env.log.stream.write(plain1 + plain2);
+  if (opts.stream) opts.stream.write(plain1 + plain2);
 };

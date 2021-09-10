@@ -1,15 +1,16 @@
 /**
- * VECTOR :: BOOT MANAGER
+ * VECTOR :: BOOTSTRAPPER
  */
 
-const child = require(`child_process`);
 const fs = require(`fs`);
 const util = require(`util`);
 const AZip = require(`adm-zip`);
+const djs = require(`discord.js`);
+const keys = require(`../../cfg/keys.json`);
 const cfg = require(`../../cfg/bot.json`);
 const pkg = require(`../../package.json`);
-const log = require(`./log.js`);
-const env = require(`./envmem.js`);
+const logger = require(`../util/logger.js`);
+const log = logger.write;
 
 // ensures bot doesnt end up in a boot loop
 const resetcheck = {
@@ -24,6 +25,23 @@ const resetcheck = {
   }, 1000)
 };
 
+const env = {
+  debug: false,
+  log: {
+    stream: null,
+    filename: null,
+  },
+  cli: null,
+  recovery: {
+    log: null
+  }
+};
+
+console.log(process.argv[2]);
+
+const setup_opts = JSON.parse(process.argv[2]);
+env.debug = setup_opts.debug;
+
 function preinit() {
   console.clear();
 
@@ -31,6 +49,9 @@ function preinit() {
 
   env.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
   env.log.stream = fs.createWriteStream(`./logs/${env.log.filename}.log`);
+
+  logger.opts.stream = env.log.stream;
+  logger.opts.debug = env.debug;
 
   if (!env.debug) {
     // if the bot has restarted more than x times within the past hour, print a warning.
@@ -51,49 +72,53 @@ function preinit() {
 function init() {
   log(`Launching Vector...`, `info`);
 
-  // start bot as child process
-  const bot = child.spawn(`node`, [`vmodules/core/app.js`, env.debug, env.log.filename], {
-    stdio: [`pipe`, `pipe`, `pipe`, `ipc`]
+  const shard_opts = {
+    token: keys.discord,
+    shardArgs: [env.debug, env.log.filename]
+  };
+
+  const manager = new djs.ShardingManager(`./vmodules/core/shard.js`, shard_opts);
+
+  manager.on(`shardCreate`, shard => {
+    log(`[SHARD] Spawned with ID ${shard.id}`);
+
+    shard.on(`message`, (data) => {
+      if (data == null || data.constructor !== Object || data.t == null) {
+        return log(util.inspect(data)); // to the debugeon with you
+      }
+
+      switch (data.t) {
+        case `LOG`:
+          log(data.c.content, data.c.level, data.c.file);
+          break;
+        case `READY`:
+          log(`Bot ready`);
+          if (env.recovery.log != null) {
+            // send crash data
+            const payload = {
+              t: `CRASHLOG`,
+              c: env.recovery.log
+            };
+
+            shard.send(payload, (err) => {
+              if (err) return log(`Failed to send payload to shard: ` + err.stack, `error`);
+
+              // once finished, clear crash data so it's not sent again during next scheduled restart.
+              env.recovery.log = null;
+            });
+          }
+          break;
+        default:
+          log(util.inspect(data)); // to the debugeon with you... again
+      }
+    });
+
+    shard.on(`death`, () => {
+      log(`he's dead jim`);
+    });
   });
 
-  bot.stdout.on(`data`, (data) => {
-    log(data);
-  });
-
-  bot.stderr.on(`data`, (data) => {
-    log(data, `fatal`);
-  });
-
-  bot.on(`message`, (data) => {
-    if (data == null || data.constructor !== Object || data.t == null) {
-      return log(util.inspect(data)); // to the debugeon with you
-    }
-
-    switch (data.t) {
-      case `LOG`:
-        log(data.c.content, data.c.level, data.c.file);
-        break;
-      case `READY`:
-        log(`Bot ready`);
-        if (env.recovery.log != null) {
-          // send crash data
-          const payload = {
-            t: `CRASHLOG`,
-            c: env.recovery.log
-          };
-
-          bot.send(payload, (err) => {
-            if (err) return log(`Failed to send payload to child process: ` + err.stack, `error`);
-
-            // once finished, clear crash data so it's not sent again during next scheduled restart.
-            env.recovery.log = null;
-          });
-        }
-        break;
-      default:
-        log(util.inspect(data)); // to the debugeon with you... again
-    }
-  });
+  manager.spawn();
 }
 
 function exit(code) {

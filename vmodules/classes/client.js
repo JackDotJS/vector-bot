@@ -1,7 +1,6 @@
 const djs = require(`discord.js`);
 const cfg = require(`../../cfg/bot.json`);
-const mem = require(`../core/memory.js`);
-const log = require(`../core/log.js`);
+const log = require(`../util/logger.js`).write;
 
 module.exports = class Vector extends djs.Client {
   constructor(djs_opts, options = {}) {
@@ -15,14 +14,13 @@ module.exports = class Vector extends djs.Client {
       Object.assign(cfg, dcfg);
     }
 
-    mem.client = this;
-
     this.keys = require(`../../cfg/keys.json`);
     this.log = log;
     this.cfg = cfg;
     this.debug = options.debug;
     this.booting = true;
     this.version = require(`../../package.json`).version;
+    this.memory = {};
 
     log(`client instance ready`);
   }

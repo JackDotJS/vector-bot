@@ -1,5 +1,5 @@
 /**
- * VECTOR :: CORE APP
+ * VECTOR :: SHARD PROCESS
  */
 
 if (!process.send) throw new Error(`Cannot run standalone.`);
@@ -7,7 +7,7 @@ if (!process.send) throw new Error(`Cannot run standalone.`);
 const djs = require(`discord.js`);
 const util = require(`util`);
 const Vector = require(`../classes/client.js`);
-const log = require(`./log.js`);
+const log = require(`../util/logger.js`).write;
 
 const djs_opts = {
   presence: {
@@ -31,7 +31,7 @@ const vec_opts = {
 
 const bot = new Vector(djs_opts, vec_opts);
 
-bot.login(bot.keys.discord).catch(err => {
+bot.login().catch(err => {
   log(err, `fatal`);
   log(`Failed to connect to Discord API. Restarting in 5 minutes...`);
 
@@ -43,7 +43,6 @@ bot.login(bot.keys.discord).catch(err => {
 });
 
 // Bot Ready
-
 bot.on(`ready`, () => {
   log(`Successfully connected to Discord API.`, `info`);
 });

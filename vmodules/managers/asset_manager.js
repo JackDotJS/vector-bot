@@ -1,5 +1,5 @@
 const mem = require(`../core/memory.js`);
-const log = require(`../core/log.js`);
+const log = require(`../util/logger.js`).write;
 
 module.exports = class AssetManager {
   constructor() {
