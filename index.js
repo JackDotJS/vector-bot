@@ -3,6 +3,7 @@
  */
 
 const child = require(`child_process`);
+const fs = require(`fs`);
 const readline = require(`readline`);
 const pkg = require(`./package.json`);
 
@@ -16,6 +17,20 @@ const cli = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
+const mkdirs = [
+  `./.local`,
+  `./data`,
+  `./logs/crash`,
+  `./logs/archive`,
+  `./logs/all`
+];
+
+for (const item of mkdirs) {
+  if (!fs.existsSync(item)) {
+    fs.mkdirSync(item, { recursive: true });
+  }
+}
 
 // theres probably a better way to do this
 

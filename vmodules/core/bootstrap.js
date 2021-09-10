@@ -48,7 +48,7 @@ function preinit() {
   process.title = `Vector Bot ${pkg.version} | Initializing...`;
 
   env.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
-  env.log.stream = fs.createWriteStream(`./logs/${env.log.filename}.log`);
+  env.log.stream = fs.createWriteStream(`./logs/all/${env.log.filename}.log`);
 
   logger.opts.stream = env.log.stream;
   logger.opts.debug = env.debug;
@@ -189,9 +189,9 @@ function exit(code) {
 
   setTimeout(() => {
     if (report) {
-      const crashlog = `../../crashlogs/${env.log.filename}.log`;
+      const crashlog = `../../logs/crash/${env.log.filename}.log`;
 
-      fs.copyFileSync(`../../logs/${env.log.filename}.log`, crashlog);
+      fs.copyFileSync(`../../logs/all/${env.log.filename}.log`, crashlog);
 
       env.recovery.log = crashlog;
     }
