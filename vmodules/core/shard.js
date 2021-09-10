@@ -20,6 +20,7 @@ const djs_opts = {
   },
   disableMentions: `everyone`, // remove this line to die instantly
   intents: [
+    // https://discord.com/developers/docs/topics/gateway#list-of-intents
     djs.Intents.FLAGS.GUILDS,
     djs.Intents.FLAGS.GUILD_MESSAGES,
     djs.Intents.FLAGS.DIRECT_MESSAGES
