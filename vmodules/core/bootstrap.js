@@ -74,7 +74,8 @@ function init() {
 
   const shard_opts = {
     token: keys.discord,
-    shardArgs: [env.debug, env.log.filename]
+    shardArgs: [env.debug, env.log.filename],
+    totalShards: 3, // FOR TESTING ONLY
   };
 
   const manager = new djs.ShardingManager(`./vmodules/core/shard.js`, shard_opts);

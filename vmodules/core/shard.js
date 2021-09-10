@@ -5,6 +5,7 @@
 if (!process.send) throw new Error(`Cannot run standalone.`);
 
 const djs = require(`discord.js`);
+const fs = require(`fs`);
 const util = require(`util`);
 const Vector = require(`../classes/client.js`);
 const log = require(`../util/logger.js`).write;
@@ -31,6 +32,14 @@ const vec_opts = {
 
 const bot = new Vector(djs_opts, vec_opts);
 
+// load event handlers
+for (const file of fs.readdirSync(`./vmodules/events/`)) {
+  const event = require(`../events/${file}`);
+  bot.on(event.name, event.run);
+  log(`Loaded event handler "${event.name}" from ${file}`);
+}
+
+// finally log in
 bot.login().catch(err => {
   log(err, `fatal`);
   log(`Failed to connect to Discord API. Restarting in 5 minutes...`);
@@ -40,9 +49,4 @@ bot.login().catch(err => {
   setTimeout(() => {
     process.exit(1);
   }, (1000 * 60 * 5));
-});
-
-// Bot Ready
-bot.on(`ready`, () => {
-  log(`Successfully connected to Discord API.`, `info`);
 });
