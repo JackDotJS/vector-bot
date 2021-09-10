@@ -81,7 +81,7 @@ function init() {
   const manager = new djs.ShardingManager(`./vmodules/core/shard.js`, shard_opts);
 
   manager.on(`shardCreate`, shard => {
-    log(`[SHARD] Spawned with ID ${shard.id}`);
+    log(`[S-${shard.id}] New shard created!`, `info`);
 
     shard.on(`message`, (data) => {
       if (data == null || data.constructor !== Object || data.t == null) {
@@ -90,7 +90,7 @@ function init() {
 
       switch (data.t) {
         case `LOG`:
-          log(data.c.content, data.c.level, data.c.file);
+          log(`[S-${shard.id}] ${data.c.content}`, data.c.level, data.c.file);
           break;
         case `READY`:
           log(`Bot ready`);
