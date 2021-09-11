@@ -2,6 +2,7 @@
  * VECTOR :: BOOTSTRAPPER
  */
 
+ const child = require(`child_process`);
 const fs = require(`fs`);
 const util = require(`util`);
 const AZip = require(`adm-zip`);
@@ -31,7 +32,7 @@ const env = {
     stream: null,
     filename: null,
   },
-  cli: null,
+  api: null,
   recovery: {
     log: null
   }
@@ -66,6 +67,30 @@ function preinit() {
     }
   }
 
+  env.api = child.spawn(`node`, [`vmodules/core/api.js`, env.debug], {
+    stdio: [`inherit`, `inherit`, `inherit`, `ipc`]
+  });
+
+  env.api.on(`message`, (data) => {
+    if (data == null || data.constructor !== Object || data.t == null) {
+      return log(util.inspect(data)); // to the debugeon with you
+    }
+
+    switch (data.t) {
+      case `LOG`:
+        log(`[API] ${data.c.content}`, data.c.level, data.c.file);
+        break;
+      default:
+        log(util.inspect(data)); // to the debugeon with you... again
+    }
+  });
+
+  env.api.on(`exit`, (code) => {
+    if (code != 0) {
+      log(`API subprocess closed prematurely!`, `error`);
+    }
+  });
+
   init();
 }
 
@@ -75,7 +100,7 @@ function init() {
   const shard_opts = {
     token: keys.discord,
     shardArgs: [env.debug, env.log.filename],
-    totalShards: 3, // FOR TESTING ONLY
+    //totalShards: 3, // FOR TESTING ONLY
   };
 
   const manager = new djs.ShardingManager(`./vmodules/core/shard.js`, shard_opts);
@@ -102,7 +127,7 @@ function init() {
             };
 
             shard.send(payload, (err) => {
-              if (err) return log(`Failed to send payload to shard: ` + err.stack, `error`);
+              if (err) return log(`Failed to send payload to shard: ${err.stack}`, `error`);
 
               // once finished, clear crash data so it's not sent again during next scheduled restart.
               env.recovery.log = null;
@@ -123,6 +148,10 @@ function init() {
 }
 
 function exit(code) {
+  env.api.send({ t: `STOP` }, (err) => {
+    if (err) log(`Failed to send payload to API subprocess: ${err.stack}`, `error`);
+  });
+
   resetcheck.resets++;
   env.log.stream.end();
 

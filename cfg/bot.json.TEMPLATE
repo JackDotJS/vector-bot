@@ -13,5 +13,8 @@
   "resetcheck": {
     "min_reset_warning": 5,
     "max_resets_per_hour": 50
+  },
+  "api": {
+    "port": 80
   }
 }

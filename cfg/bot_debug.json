@@ -5,5 +5,8 @@
       "verbose": true,
       "inspect_depth": 2
     }
+  },
+  "api": {
+    "port": 27069
   }
 }
