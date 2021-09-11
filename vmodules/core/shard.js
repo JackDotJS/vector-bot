@@ -18,7 +18,7 @@ const djs_opts = {
       name: `assets load 🔄`
     }
   },
-  disableMentions: `everyone`, // remove this line to die instantly
+  allowedMentions: { parse: [`users`, `roles`] }, // remove this line to die instantly
   intents: [
     // https://discord.com/developers/docs/topics/gateway#list-of-intents
     djs.Intents.FLAGS.GUILDS,
