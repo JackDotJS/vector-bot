@@ -1,6 +1,7 @@
 {
   "dev": {
     "discord_user_id": "",
+    "user_whitelist": [],
     "exec": {
       "verbose": true,
       "inspect_depth": 2
