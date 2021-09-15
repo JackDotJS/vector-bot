@@ -2,7 +2,7 @@
  * VECTOR :: BOOTSTRAPPER
  */
 
- const child = require(`child_process`);
+const child = require(`child_process`);
 const fs = require(`fs`);
 const util = require(`util`);
 const AZip = require(`adm-zip`);

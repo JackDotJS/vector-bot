@@ -41,7 +41,18 @@ for (const file of fs.readdirSync(`./vmodules/events/`)) {
 }
 
 // finally log in
-bot.login().catch(err => {
+bot.login().then(async () => {
+  // temporary test
+  const { SlashCommandBuilder } = require(`@discordjs/builders`);
+  const cache = await bot.managers.assets.getCacheGuild();
+
+  cache.commands.set([
+    new SlashCommandBuilder()
+      .setName(`vectortest`)
+      .setDescription(`incredibly basic interaction test`)
+      .toJSON()
+  ]);
+}).catch(err => {
   log(err, `fatal`);
   log(`Failed to connect to Discord API. Restarting in 5 minutes...`);
 
