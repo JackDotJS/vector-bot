@@ -6,10 +6,6 @@ console.clear();
 
 const env = {
   debug: false,
-  log: {
-    stream: null,
-    filename: null,
-  },
   api: null,
   recovery: {
     log: null
@@ -27,32 +23,21 @@ const djs = require(`discord.js`);
 const keys = require(`../../cfg/keys.json`);
 const cfg = require(`../util/bot_config.js`)(env.debug);
 const pkg = require(`../../package.json`);
-const logger = require(`../util/logger.js`);
-const log = logger.write;
+const log = require(`../util/logger.js`).write;
 
 process.title = `Vector Bot ${pkg.version} | Initializing...`;
-
-env.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
-env.log.stream = fs.createWriteStream(`./logs/all/${env.log.filename}.log`);
-
-logger.opts.stream = env.log.stream;
-logger.opts.debug = env.debug;
 
 env.api = child.spawn(`node`, [`vmodules/core/api.js`, env.debug], {
   stdio: [`inherit`, `inherit`, `inherit`, `ipc`]
 });
 
-env.api.on(`message`, (data) => {
-  if (data == null || data.constructor !== Object || data.t == null) {
-    return log(util.inspect(data)); // to the debugeon with you
-  }
-
+env.api.on(`message`, (data = {}) => {
   switch (data.t) {
     case `LOG`:
       log(`[API] ${data.c.content}`, data.c.level, data.c.file);
       break;
     default:
-      log(util.inspect(data)); // to the debugeon with you... again
+      log(util.inspect(data)); // to the debugeon with you
   }
 });
 
@@ -76,11 +61,7 @@ function init() {
   manager.on(`shardCreate`, shard => {
     log(`[SHARD ${shard.id}] New shard created!`, `info`);
 
-    shard.on(`message`, (data) => {
-      if (data == null || data.constructor !== Object || data.t == null) {
-        return log(util.inspect(data)); // to the debugeon with you
-      }
-
+    shard.on(`message`, (data = {}) => {
       switch (data.t) {
         case `LOG`:
           log(`[S-${shard.id}] ${data.c.content}`, data.c.level, data.c.file);
@@ -103,7 +84,7 @@ function init() {
           }
           break;
         default:
-          log(util.inspect(data)); // to the debugeon with you... again
+          log(util.inspect(data)); // to the debugeon with you
       }
     });
 

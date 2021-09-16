@@ -4,9 +4,12 @@
 
 const child = require(`child_process`);
 const fs = require(`fs`);
+const path = require(`path`);
+const util = require(`util`);
 const readline = require(`readline`);
 const pkg = require(`./package.json`);
-const log = require(`./vmodules/util/logger.js`).write;
+const logger = require(`./vmodules/util/logger.js`);
+const log = logger.write;
 
 // ensures bot doesnt end up in a boot loop
 const resetcheck = {
@@ -23,15 +26,16 @@ const resetcheck = {
 
 const opts = {
   debug: false,
-  recovered: false,
+  crashlog: null,
+  log: {
+    filename: null,
+    stream: null
+  }
 };
 
 process.title = `Vector Bot ${pkg.version}`;
 
-const cli = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+// make some required directories
 
 const mkdirs = [
   `./.local`,
@@ -46,6 +50,13 @@ for (const item of mkdirs) {
     fs.mkdirSync(item, { recursive: true });
   }
 }
+
+// setup questions
+
+const cli = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 const setup_qs = [];
 
@@ -89,7 +100,15 @@ setup_qs.push((resolve, reject) => {
   start();
 })();
 
+// app start
+
 function start() {
+  opts.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
+  opts.log.stream = fs.createWriteStream(`./logs/all/${opts.log.filename}.log`);
+
+  logger.opts.debug = opts.debug;
+  logger.opts.stream = opts.log.stream;
+
   const cfg = require(`./vmodules/util/bot_config.js`)(opts.debug);
 
   if (!opts.debug) {
@@ -106,17 +125,38 @@ function start() {
   }
 
   const sm = child.spawn(`node`, [`vmodules/core/bootstrap.js`, JSON.stringify(opts)], {
-    stdio: `inherit`
+    stdio: [`pipe`,`pipe`,`pipe`,`ipc`]
   });
 
-  sm.on(`exit`, exit);
+  sm.stdout.setEncoding(`utf8`);
+  sm.stderr.setEncoding(`utf8`);
+
+  sm.stdout.on(`data`, (data) => {
+    log(data);
+  });
+
+  sm.stderr.on(`data`, (data) => {
+    log(data, `error`);
+  });
+
+  sm.on(`message`, (data = {}) => {
+    switch (data.t) {
+      case `LOG`:
+        log(data.c.content, data.c.level, data.c.file);
+        break;
+      default:
+        log(util.inspect(data)); // to the debugeon with you
+    }
+  });
+
+  sm.on(`error`, err => {
+    log(err.stack, `fatal`);
+  });
+
+  sm.on(`close`, exit);
 }
 
 function exit(code) {
-  // env.api.send({ t: `STOP` }, (err) => {
-  //   if (err) log(`Failed to send payload to API subprocess: ${err.stack}`, `error`);
-  // });
-
   resetcheck.resets++;
 
   let exit = true;
@@ -180,11 +220,16 @@ function exit(code) {
 
   if (code > 128) log(`Signal exit code ${code - 128}.`, `fatal`);
 
-  setTimeout(() => {
-    if (report) {
-      opts.recovered = true;
-    }
+  opts.log.stream.close();
 
+  if (report) {
+    opts.crashlog = `./logs/crash/${path.basename(opts.log.stream.path)}`;
+    fs.copyFileSync(opts.log.stream.path, opts.crashlog);
+  } else {
+    opts.crashlog = null;
+  }
+
+  setTimeout(() => {
     if (exit) {
       return process.exit(code);
     }

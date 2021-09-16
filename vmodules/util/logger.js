@@ -20,6 +20,7 @@ function getSrc(trace) {
 }
 
 const opts = {
+  onlywrite: false,
   debug: false,
   stream: null
 };
@@ -27,7 +28,7 @@ const opts = {
 exports.opts = opts;
 
 exports.write = (content, level, file) => {
-  if (process.send) {
+  if (process.send && !opts.onlywrite) {
     if (file == null) {
       const result = getSrc(new Error().stack);
 
