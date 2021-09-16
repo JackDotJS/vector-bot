@@ -7,6 +7,7 @@ const fs = require(`fs`);
 const path = require(`path`);
 const util = require(`util`);
 const readline = require(`readline`);
+const AZip = require(`adm-zip`); // will be using this later
 const pkg = require(`./package.json`);
 const logger = require(`./vmodules/util/logger.js`);
 const log = logger.write;
@@ -100,7 +101,7 @@ setup_qs.push((resolve, reject) => {
   start();
 })();
 
-// app start
+// app head
 
 function start() {
   opts.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
