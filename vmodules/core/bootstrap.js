@@ -9,7 +9,8 @@ const setup_opts = JSON.parse(process.argv[2]);
 const env = {
   debug: setup_opts.debug,
   crashlog: setup_opts.crashlog,
-  api: null
+  api: null,
+  manager: null
 };
 
 const child = require(`child_process`);
@@ -36,9 +37,11 @@ env.api.on(`message`, (data = {}) => {
 });
 
 env.api.on(`exit`, (code) => {
-  if (code != 0) {
-    log(`API subprocess closed prematurely!`, `error`);
-  }
+  log(`API subprocess closed prematurely! (code: ${code})`, `error`);
+
+  env.manager.broadcast({
+    t: `APICLOSED`
+  });
 });
 
 function init() {
@@ -50,9 +53,9 @@ function init() {
     //totalShards: 3, // FOR TESTING ONLY
   };
 
-  const manager = new djs.ShardingManager(`./vmodules/core/shard.js`, shard_opts);
+  env.manager = new djs.ShardingManager(`./vmodules/core/shard.js`, shard_opts);
 
-  manager.on(`shardCreate`, shard => {
+  env.manager.on(`shardCreate`, shard => {
     log(`[SHARD ${shard.id}] New shard created!`, `info`);
 
     shard.on(`message`, (data = {}) => {
@@ -70,7 +73,7 @@ function init() {
     });
   });
 
-  manager.spawn();
+  env.manager.spawn();
 }
 
 init();
