@@ -12,7 +12,6 @@ module.exports = class Vector extends djs.Client {
     this.debug = options.debug;
     this.booting = true;
     this.version = require(`../../package.json`).version;
-    this.memory = {};
 
     this.managers = {
       assets: require(`../managers/asset_manager.js`)
