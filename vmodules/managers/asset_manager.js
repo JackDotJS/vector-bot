@@ -2,7 +2,7 @@
  * VECTOR :: ASSET MANAGER
  */
 
-const mem = require(`../core/memory.js`);
+const memory = require(`../core/shard_memory.js`);
 const log = require(`../util/logger.js`).write;
 
 module.exports = class AssetManager {
@@ -11,7 +11,7 @@ module.exports = class AssetManager {
   }
 
   static async getCacheGuild() {
-    const bot = mem.client;
-    return await this.guilds.fetch({ guild: bot.cfg.cache.guild_id, withCounts: false });
+    const bot = memory.client;
+    return await bot.guilds.fetch({ guild: bot.cfg.cache.guild_id, withCounts: false });
   }
 };

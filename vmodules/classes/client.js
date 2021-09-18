@@ -1,4 +1,5 @@
 const djs = require(`discord.js`);
+const memory = require(`../core/shard_memory.js`);
 const cfg = require(`../util/bot_config.js`);
 const log = require(`../util/logger.js`).write;
 
@@ -17,6 +18,7 @@ module.exports = class Vector extends djs.Client {
       assets: require(`../managers/asset_manager.js`)
     };
 
+    memory.client = this;
     log(`client instance ready`);
   }
 
