@@ -46,14 +46,16 @@ bot.login().then(async () => {
   const { SlashCommandBuilder } = require(`@discordjs/builders`);
   const cache = await bot.managers.assets.getCacheGuild();
 
-  cache.commands.set([
+  const result = await cache.commands.set([
     new SlashCommandBuilder()
       .setName(`vectortest`)
       .setDescription(`incredibly basic interaction test`)
       .toJSON()
   ]);
+
+  log(result);
 }).catch(err => {
-  log(err, `fatal`);
+  log(err.stack, `fatal`);
   log(`Failed to connect to Discord API. Restarting in 5 minutes...`);
 
   // 5 minute timeout to give the API some time to be restored.
