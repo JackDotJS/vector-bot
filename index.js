@@ -143,7 +143,7 @@ function start() {
   sm.on(`message`, (data = {}) => {
     switch (data.t) {
       case `LOG`:
-        log(data.c.content, data.c.level, data.c.file);
+        log(data.c.content, data.c.level, data.c.file, data.c.prefix);
         break;
       default:
         log(util.inspect(data)); // to the debugeon with you

@@ -27,7 +27,7 @@ const opts = {
 
 exports.opts = opts;
 
-exports.write = (content, level, file) => {
+exports.write = (content, level, file, prefix = ``) => {
   if (process.send && !opts.onlywrite) {
     if (file == null) {
       const result = getSrc(new Error().stack);
@@ -40,7 +40,8 @@ exports.write = (content, level, file) => {
       c: {
         content,
         level,
-        file
+        file,
+        prefix
       }
     });
   }
@@ -116,7 +117,7 @@ exports.write = (content, level, file) => {
   }
 
   const plain1 = `[${timestamp.content}] [${file_path.content}] [${log_level.content}] : `;
-  const plain2 = message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`) + `\n`;
+  const plain2 = (prefix.trim() + ` ` + message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`)).trim() + `\n`;
 
   const terminal1 = [
     timestamp.color(`[${timestamp.content}]`),
@@ -124,7 +125,7 @@ exports.write = (content, level, file) => {
     log_level.color(`[${log_level.content}]`),
     `: `
   ].join(` `);
-  const terminal2 = message.color(message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`));
+  const terminal2 = message.color((prefix.trim() + ` ` + message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`)).trim());
 
   console.log(terminal1 + terminal2);
   if (opts.stream) opts.stream.write(plain1 + plain2);
