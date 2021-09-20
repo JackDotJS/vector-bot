@@ -3,5 +3,8 @@
  */
 
 module.exports = {
-  client: null
+  client: null,
+  assets: {
+    commands: []
+  }
 };
