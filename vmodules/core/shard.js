@@ -12,11 +12,13 @@ const log = require(`../util/logger.js`).write;
 
 const djs_opts = {
   presence: {
-    status: `idle`,
-    activity: {
-      type: `WATCHING`,
-      name: `assets load 🔄`
-    }
+    status: `online`,
+    activities: [
+      {
+        type: `LISTENING`,
+        name: `on port 69 haha lol`
+      }
+    ]
   },
   allowedMentions: { parse: [`users`, `roles`] }, // remove this line to die instantly
   intents: [
