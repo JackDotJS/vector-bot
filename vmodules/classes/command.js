@@ -5,8 +5,8 @@ module.exports = class Command {
   constructor(cmd = {}) {
     this.name = cmd.name;
     this.description = {
-      short: `This command has no set description.`,
-      long: `This command has no set description.`
+      short: `This command has no short description.`,
+      long: `This command has no long description.`
     };
     this.args = null;
     this.subcmds = null;
@@ -23,32 +23,49 @@ module.exports = class Command {
     }
 
     // description validation
-    if (cmd.description != null && cmd.description.constructor !== Object) {
-      throw new TypeError(`Invalid Command property: description`);
-    } else {
-      if (cmd.description.short != null && typeof cmd.description.short === `string`) {
-        // apply SHORT description, if it exists.
-        this.description.short = cmd.description.short;
+    if (cmd.description != null) {
+      if (cmd.description.constructor !== Object) {
+        throw new TypeError(`Invalid Command property: description`);
       }
 
-      if (cmd.description.long != null && typeof cmd.description.long === `string`) {
+      const short = cmd.description.short;
+      const long = cmd.description.long;
+
+      if (short != null) {
+        if (typeof short !== `string`) {
+          throw new TypeError(`Invalid Command property: description.short`);
+        }
+
+        // apply SHORT description, if it exists.
+        this.description.short = short;
+      }
+
+      if (long != null) {
+        if (typeof long !== `string`) {
+          throw new TypeError(`Invalid Command property: description.long`);
+        }
+
         // apply LONG description, if it exists.
-        this.description.long = cmd.description.long;
-      } else {
-        // ...otherwise just copy the short description.
-        this.description.long = this.description.short;
+        this.description.long = long;
+      } 
+
+      if (short != null && long == null) {
+        // if long description doesnt exist, use short description
+        this.description.long = short;
       }
     }
 
     // argument validation
-    if (!Array.isArray(cmd.args)) {
-      throw new TypeError(`Invalid Command property: args`);
-    } else {
+    if (cmd.args != null) {
+      if (!Array.isArray(cmd.args)) {
+        throw new TypeError(`Invalid Command property: args`);
+      }
+
       for (const arg of cmd.args) {
         if (arg == null || arg.constructor !== Object) {
           throw new TypeError(`Invalid Command property: args (Invalid Element Type)`);
-          // todo
         }
+        // todo
       }
     }
 
@@ -63,9 +80,11 @@ module.exports = class Command {
     }
 
     // validate guilds
-    if (!Array.isArray(cmd.guilds)) {
-      throw new TypeError(`Invalid Command property: guilds`);
-    } else {
+    if (cmd.guilds != null) {
+      if (!Array.isArray(cmd.guilds)) {
+        throw new TypeError(`Invalid Command property: guilds`);
+      }
+
       for (const id in cmd.guilds) {
         if (id == null || typeof id !== `string`) {
           throw new TypeError(`Invalid Command property: guilds (Invalid Element Type)`);
@@ -76,31 +95,30 @@ module.exports = class Command {
     // validate default perm
     if (typeof cmd.perm !== `string`) {
       throw new TypeError(`Invalid Command property: perm`);
-    } else {
-      const flags = Object.keys(djs.Permissions.FLAGS);
+    }
 
-      if (!flags.includes(cmd.perm)) {
-        throw new TypeError(`Invalid Command property: perm (Invalid Permission)`);
-      }
+    const flags = Object.keys(djs.Permissions.FLAGS);
+    if (!flags.includes(cmd.perm)) {
+      throw new TypeError(`Invalid Command property: perm (Invalid Permission)`);
     }
 
     // validate image
-    if (typeof cmd.image !== `string`) {
+    if (cmd.image != null && typeof cmd.image !== `string`) {
       throw new TypeError(`Invalid Command property: image`);
     }
 
     // validate allow dm
-    if (typeof cmd.dm !== `boolean`) {
+    if (cmd.dm != null && typeof cmd.dm !== `boolean`) {
       throw new TypeError(`Invalid Command property: dm`);
     }
 
     // validate use typing indicator
-    if (typeof cmd.typer !== `boolean`) {
+    if (cmd.typer != null && typeof cmd.typer !== `boolean`) {
       throw new TypeError(`Invalid Command property: typer`);
     }
 
     // validate command func
-    if (cmd.run != null && typeof cmd.run !== `function`) {
+    if (typeof cmd.run !== `function`) {
       throw new TypeError(`Invalid Command property: run`);
     }
   }
