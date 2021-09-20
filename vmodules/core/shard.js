@@ -16,7 +16,7 @@ const djs_opts = {
     activities: [
       {
         type: `LISTENING`,
-        name: `on port 69 haha lol`
+        name: `port 69 haha lol`
       }
     ]
   },
