@@ -15,8 +15,11 @@ module.exports = class Vector extends djs.Client {
     this.version = require(`../../package.json`).version;
 
     this.managers = {
-      assets: require(`../managers/asset_manager.js`)
+      assets: require(`../managers/asset_manager.js`),
+      commands: require(`../managers/command_manager.js`)
     };
+
+    this.managers.commands.loadCommands();
 
     memory.client = this;
     log(`client instance ready`);
