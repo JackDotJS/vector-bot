@@ -41,7 +41,7 @@ module.exports = class CommandManager {
       }
     }
 
-    log(`Successfully loaded ${memory.assets.commands.length} commands!`, `info`);
+    log(`Successfully loaded ${memory.assets.commands.length} command(s)!`, `info`);
 
     return memory.assets.commands;
   }
