@@ -16,24 +16,29 @@ module.exports = class CommandManager {
     memory.assets.commands = [];
 
     for (const file of fs.readdirSync(`./vmodules/commands/`, { withFileTypes: true })) {
-      if (file == null || !file.isFile() || !file.name.endsWith(`.js`)) continue;
-      const cmd = require(`../commands/${file}`);
+      try {
+        if (file == null || !file.isFile() || !file.name.endsWith(`.js`)) continue;
+        const cmd = require(`../commands/${file.name}`);
 
-      if (cmd.constructor !== Command) continue;
+        if (cmd.constructor !== Command) continue;
 
-      let add = true;
+        let add = true;
 
-      for (const ecmd in memory.assets.commands) {
-        if (cmd.name === ecmd.name) {
-          add = false;
-          log(`Could not load command "${cmd.name}" (Name taken)`, `error`);
+        for (const ecmd in memory.assets.commands) {
+          if (cmd.name === ecmd.name) {
+            add = false;
+            log(`Could not load command "${cmd.name}" (Name taken)`, `error`);
+          }
         }
+
+        if (!add) continue;
+
+        memory.assets.commands.push(cmd);
+        log(`Loaded command "${cmd.name}" from ${file.name}`);
       }
-
-      if (!add) continue;
-
-      memory.assets.commands.push(cmd);
-      log(`Loaded command "${cmd.name}" from ${file}`);
+      catch (err) {
+        log(`Could not load command from "${file.name}" \n${err.stack}`, `error`);
+      }
     }
 
     log(`Successfully loaded ${memory.assets.commands.length} commands!`, `info`);
