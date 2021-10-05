@@ -41,6 +41,7 @@ process.title = `Vector Bot ${pkg.version}`;
 const mkdirs = [
   `./.local`,
   `./data`,
+  `./data/archive`,
   `./logs/crash`,
   `./logs/archive`,
   `./logs/all`
