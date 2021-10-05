@@ -19,11 +19,8 @@ memory.cfg = cfg;
 memory.app = app;
 memory.server = server;
 
-// default routes act as status check
+// default route act as status check
 app.get(`/`, (req, res) => {
-  res.status(200).json({ message: `we fresh asf` });
-});
-app.use((req, res) => {
   res.status(200).json({ message: `we fresh asf` });
 });
 
@@ -31,7 +28,9 @@ app.use((req, res) => {
 for (const file of fs.readdirSync(`./vmodules/api/`)) {
   const route = require(`../api/${file}`);
 
-  route.method(route.route, (req, res) => {
+  log(util.inspect(route));
+
+  const params = [route.route, (req, res) => {
     // this probably isn't 100% secure but it's better than leaving everything completely open.
     // ...probably
     if (req.query.key !== keys.db) {
@@ -40,7 +39,27 @@ for (const file of fs.readdirSync(`./vmodules/api/`)) {
     }
 
     return route.run(req, res);
-  });
+  }];
+
+  switch(route.method) {
+    case `GET`:
+      app.get(...params);
+      break;
+    case `POST`:
+      app.post(...params);
+      break;
+    case `PUT`:
+      app.put(...params);
+      break;
+    case `PATCH`:
+      app.patch(...params);
+      break;
+    case `DELETE`:
+      app.delete(...params);
+      break;
+    default:
+      throw new TypeError(`Unknown HTTP Method: ${route.method}`);
+  }
 
   log(`Loaded route handler from ${file}`);
 }
