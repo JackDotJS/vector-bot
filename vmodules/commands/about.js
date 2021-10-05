@@ -15,7 +15,7 @@ const metadata = {
 };
 
 metadata.run = async (m) => {
-
+  return m.channel.send(`response`);
 };
 
 module.exports = new Command(metadata);
