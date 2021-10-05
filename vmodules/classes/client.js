@@ -24,6 +24,10 @@ module.exports = class Vector extends djs.Client {
 
     memory.client = this;
     log(`client instance ready`);
+
+    // will be adding more stuff here later
+    // dont worry, this property isnt completely pointless
+    this.booting = false;
   }
 
   exit(code = 0) {
