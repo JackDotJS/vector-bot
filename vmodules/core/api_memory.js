@@ -10,6 +10,6 @@ module.exports = {
   cfg: null,
   db: {
     records: db.create({ filename: `./data/records.db`, autoload: true }),
-    guildcfg: db.create({ filename: `./data/guildcfg.db`, autoload: true })
+    guildcfgs: db.create({ filename: `./data/guildcfgs.db`, autoload: true })
   }
 };
