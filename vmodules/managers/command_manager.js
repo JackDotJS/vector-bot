@@ -12,19 +12,19 @@ module.exports = class CommandManager {
     throw new Error(`Why are you doing this? (Cannot instantiate this class.)`);
   }
 
-  static async loadCommands() {
-    memory.assets.commands = [];
+  static async load() {
+    memory.commands = [];
 
     for (const file of fs.readdirSync(`./vmodules/commands/`, { withFileTypes: true })) {
       try {
-        if (file == null || !file.isFile() || !file.name.endsWith(`.js`)) continue;
+        if (file == null || !file.isFile() || !file.name.toLowerCase().endsWith(`.js`)) continue;
         const cmd = require(`../commands/${file.name}`);
 
         if (cmd.constructor !== Command) continue;
 
         let add = true;
 
-        for (const ecmd in memory.assets.commands) {
+        for (const ecmd in memory.commands) {
           if (cmd.name === ecmd.name) {
             add = false;
             log(`Could not load command "${cmd.name}" (Name taken)`, `error`);
@@ -33,7 +33,7 @@ module.exports = class CommandManager {
 
         if (!add) continue;
 
-        memory.assets.commands.push(cmd);
+        memory.commands.push(cmd);
         log(`Loaded command "${cmd.name}" from ${file.name}`);
       }
       catch (err) {
@@ -41,8 +41,20 @@ module.exports = class CommandManager {
       }
     }
 
-    log(`Successfully loaded ${memory.assets.commands.length} command(s)!`, `info`);
+    log(`Successfully loaded ${memory.commands.length} command(s)!`, `info`);
 
-    return memory.assets.commands;
+    return memory.commands;
+  }
+
+  static async get(query) {
+    if (query == null || typeof query != `string` || query.length === 0) return null;
+
+    query = query.toLowerCase();
+
+    for (const cmd of memory.commands) {
+      if (cmd.name === query) return cmd;
+    }
+
+    return null;
   }
 };
