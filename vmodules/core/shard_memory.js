@@ -4,7 +4,9 @@
 
 module.exports = {
   client: null,
-  assets: {
-    commands: []
+  commands: [],
+  lang: {
+    default: null,
+    index: []
   }
 };
