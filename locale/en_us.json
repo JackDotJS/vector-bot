@@ -1,0 +1,9 @@
+{
+  "cmd": {
+    "unknown": {
+      "title": "Unknown Command",
+      "suggestion": "Perhaps you meant \\`%%COMMAND%%\\`? (%%CONFIDENCE%%\\% match)",
+      "help": "Type %%HELPCMD%% for a list of commands."
+    }
+  }
+}
