@@ -49,7 +49,7 @@ module.exports = class LocaleManager {
     return memory.lang.index;
   }
 
-  static text(query, lang, opts) {
+  static text(query, lang, ...opts) {
     const defaultstr = `locale_text_error`;
 
     if (query == null || typeof query != `string` || query.length === 0) return defaultstr;
@@ -66,14 +66,15 @@ module.exports = class LocaleManager {
 
     selectLang = selectLang.phrases;
 
-    log(selectLang);
-
     // converts query to usable dot notation and parse each key sequentially
-    const str = query.toLowerCase().split(`.`).reduce((p,c) => p ? p[c] : null, selectLang);
-
-    log(str);
+    let str = query.toLowerCase().split(`.`).reduce((p,c) => p ? p[c] : null, selectLang);
 
     if (str == null) return defaultstr;
+
+    // replace variable string elements
+    for (const i in opts) {
+      str = str.replace(new RegExp(`%%${i}%%`, `gm`), opts[i]);
+    }
 
     return str;
   }

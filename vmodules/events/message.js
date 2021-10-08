@@ -36,8 +36,15 @@ async function handle_command(bot, message, input, gcfg, perms) {
 
   if (cmd == null) {
     const embed = new djs.MessageEmbed()
-      .setAuthor(bot.managers.locale.text(`cmd.unknown.title`, gcfg.lang))
-      .setFooter(bot.managers.locale.text(`cmd.unknown.help`, gcfg.lang, { helpcmd: gcfg.commands.prefixes[0] + `help` }))
+      .setAuthor(bot.managers.locale.text(
+        `cmd.unknown.title`,
+        gcfg.lang
+      ))
+      .setFooter(bot.managers.locale.text(
+        `cmd.unknown.help`,
+        gcfg.lang,
+        gcfg.commands.prefixes[0] + `help`
+      ))
       .setColor(bot.cfg.colors.default);
     
     if (memory.commands.length === 0) return message.reply({ embeds: [embed] });
@@ -54,10 +61,12 @@ async function handle_command(bot, message, input, gcfg, perms) {
     ratings.sort((a,b) => b.distance - a.distance);
 
     if (ratings[0].distance > 0.5) {
-      const desc = bot.managers.locale.text(`cmd.unknown.suggestion`, gcfg.lang, {
-        command: gcfg.commands.prefixes[0] + ratings[0].name,
-        confidence: (ratings[0].distance * 100).toFixed(1)
-      });
+      const desc = bot.managers.locale.text(
+        `cmd.unknown.suggestion`,
+        gcfg.lang, 
+        gcfg.commands.prefixes[0] + ratings[0].name,
+        (ratings[0].distance * 100).toFixed(1)
+      );
 
       embed.setDescription(desc);
     }
