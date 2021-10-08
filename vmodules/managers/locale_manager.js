@@ -6,6 +6,7 @@ const path = require(`path`);
 const fs = require(`fs`);
 const memory = require(`../core/shard_memory.js`);
 const log = require(`../util/logger.js`).write;
+const merge = require(`../util/deep_merge.js`);
 
 module.exports = class LocaleManager {
   constructor() {
@@ -56,19 +57,25 @@ module.exports = class LocaleManager {
 
     query = query.toLowerCase();
 
+    // find selected language
     let selectLang = null;
-
     for (const langidx of memory.lang.index) {
       if (lang === langidx.name) selectLang = langidx;
     }
 
+    // if language doesn't exist, use default
     if (selectLang == null) selectLang = memory.lang.default;
 
+    // if not default, merge language with default
+    if (selectLang.name !== memory.lang.default.name) selectLang = merge(memory.lang.default, selectLang);
+
+    // we only need the phrases from this point forward
     selectLang = selectLang.phrases;
 
     // converts query to usable dot notation and parse each key sequentially
     let str = query.toLowerCase().split(`.`).reduce((p,c) => p ? p[c] : null, selectLang);
 
+    // check if phrase exists
     if (str == null) return defaultstr;
 
     // replace variable string elements
