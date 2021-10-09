@@ -34,12 +34,12 @@ exports.run = async (message) => {
 async function handle_command(bot, message, input, gcfg, perms) {
   const cmd = await bot.managers.commands.get(input.cmd);
 
-  if (cmd == null) {
+  if (cmd == null || gcfg.commands.hidden.includes(cmd.name)) {
     const embed = new djs.MessageEmbed()
       .setAuthor(bot.managers.locale.text(
         `cmd.unknown.title`,
         gcfg.lang
-      ))
+      ), await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default))
       .setFooter(bot.managers.locale.text(
         `cmd.unknown.help`,
         gcfg.lang,
@@ -52,6 +52,10 @@ async function handle_command(bot, message, input, gcfg, perms) {
     const ratings = [];
 
     for (const searchcmd of memory.commands) {
+      if (searchcmd.guilds != null && searchcmd.guilds.includes(message.guild.id)) continue;
+      if (gcfg.commands.hidden.includes(searchcmd.name)) continue;
+      if (gcfg.commands.disabled.includes(searchcmd.name)) continue;
+
       ratings.push({
         name: searchcmd.name,
         distance: wink(input.cmd, searchcmd.name)
