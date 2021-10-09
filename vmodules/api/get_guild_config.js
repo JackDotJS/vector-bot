@@ -8,7 +8,7 @@ const handler = {
 
 handler.run = async (req, res) => {
   const gid = req.query.guild;
-  const doc = memory.db.guildcfgs.findOne({ _id: gid });
+  const doc = await memory.db.guildcfgs.findOne({ _id: gid });
   res.status(200).json({ doc: doc });
 };
 
