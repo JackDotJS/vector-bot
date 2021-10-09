@@ -31,6 +31,7 @@ for (const file of fs.readdirSync(`./vmodules/api/`)) {
   log(util.inspect(route));
 
   const params = [route.route, (req, res) => {
+    log(`${route.method} ${route.route}`);
     // this probably isn't 100% secure but it's better than leaving everything completely open.
     // ...probably
     if (req.query.key !== keys.db) {
