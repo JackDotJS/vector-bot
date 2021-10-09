@@ -8,5 +8,6 @@ module.exports = {
   lang: {
     default: null,
     index: []
-  }
+  },
+  assets_cache: []
 };
