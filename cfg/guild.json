@@ -12,7 +12,7 @@
     "channel_locked": [
       {
         "name": "Bot Command Channel(s)",
-        "whitelist": true,
+        "blacklist_mode": true,
         "commands": [],
         "allow_bypass": true
       }
@@ -68,26 +68,30 @@
     ]
   },
   "logging": {
-    "input_blacklist_mode": false,
-    "inputs": [],
-    "use_webhook": true,
-    "outputs": {
-      "channel_add": null,
-      "channel_delete": null,
-      "channel_update": null,
-      "member_ban": null,
-      "member_unban": null,
-      "member_mute": null,
-      "member_unmute": null,
-      "member_kick": null,
-      "member_join": null,
-      "member_leave": null,
-      "record_note_add": null,
-      "record_note_delete": null,
-      "record_update": null,
-      "record_pardon": null,
-      "message_delete": null,
-      "message_edit": null
+    "input": {
+      "blacklist_mode": true,
+      "channels": []
+    },
+    "output": {
+      "use_webhook": true,
+      "channels": {
+        "channel_add": null,
+        "channel_delete": null,
+        "channel_update": null,
+        "member_ban": null,
+        "member_unban": null,
+        "member_mute": null,
+        "member_unmute": null,
+        "member_kick": null,
+        "member_join": null,
+        "member_leave": null,
+        "record_note_add": null,
+        "record_note_delete": null,
+        "record_update": null,
+        "record_pardon": null,
+        "message_delete": null,
+        "message_edit": null
+      }
     }
   },
   "roles": {
