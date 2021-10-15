@@ -4,6 +4,12 @@
     "updated": 0
   },
   "lang": "en_us",
+  "automation": {
+    "auto_cmd": [],
+    "auto_react": [],
+    "auto_reply": [],
+    "auto_mod": []
+  },
   "commands": {
     "owo": false,
     "prefixes": [ "?" ],
@@ -17,7 +23,6 @@
         "allow_bypass": true
       }
     ],
-    "auto_cmd_triggers": [],
     "github_repos": [],
     "about_splash": [
       "uwu",
