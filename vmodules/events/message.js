@@ -7,7 +7,6 @@ const log = require(`../util/logger.js`).write;
 exports.name = `messageCreate`;
 exports.run = async (message) => {
   const bot = memory.client;
-  const member = message.member;
 
   // not ready to work
   if (bot.booting) return;
@@ -16,25 +15,37 @@ exports.run = async (message) => {
   // bot is in debug mode and the message author is not whitelisted
   if (bot.debug && ![bot.cfg.dev.discord_user_id, ...bot.cfg.dev.user_whitelist].includes(message.author.id)) return;
 
+  if (message.channel.type === `DM`) {
+    // can't use locale in DM since there's no access to guild configs
+    const embed = new djs.MessageEmbed()
+      .setAuthor(`Vector`, await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default))
+      .setTitle(`A Discord bot for advanced moderation & server management.`)
+      .setDescription(`[placeholder url](https://discord.gg/s5nQBxFPp2)`)
+      .setColor(bot.cfg.colors.default);
+
+    return message.channel.send({ embeds: [ embed ]});
+  }
+
   const gcfg = await bot.managers.configs.get(message.guild);
   const perms = null; // todo
 
-  const first_line = message.content.split(`\n`, 1)[0];
-  const input_split = first_line.split(` `);
-  const input = {
-    // checks if the input starts with the command prefix, immediately followed by valid characters.
-    valid: new RegExp(`^(\\${gcfg.commands.prefixes.join(`|\\`)})(?![^a-zA-Z0-9])[a-zA-Z0-9]+(?=\\s|$)`).test(first_line),
-    cmd: input_split[0].toLowerCase().substr(1),
-    args: input_split.slice(1).filter((arg) => arg.length !== 0)
-  };
+  // checks if the input starts with the command prefix, immediately followed by valid characters.
+  const valid_cmd = new RegExp(`^(\\${gcfg.commands.prefixes.join(`|\\`)})(?![^a-zA-Z0-9])[a-zA-Z0-9]+(?=\\s|$)`).test(message.content);
 
-  if (input.valid) return handle_command(bot, message, input, gcfg, perms);
+  if (valid_cmd) return handle_command(bot, message, gcfg, perms);
 };
 
-async function handle_command(bot, message, input, gcfg, perms) {
-  const cmd = await bot.managers.commands.get(input.cmd);
+async function handle_command(bot, message, gcfg, perms) {
+  const input_args = message.content.slice(1).trim().split(/ +/g);
+  const input_cmd = input_args.shift().toLowerCase();
 
-  if (cmd == null || gcfg.commands.hidden.includes(cmd.name)) {
+  const cmd = await bot.managers.commands.get(input_cmd);
+
+  const cmd_not_exist = (cmd == null);
+  const cmd_hidden = gcfg.commands.hidden.includes(cmd.name);
+  const cmd_guild_locked = (cmd.guilds != null && !cmd.guilds.includes(message.guild.id));
+
+  if (cmd_not_exist || cmd_hidden || cmd_guild_locked) {
     const embed = new djs.MessageEmbed()
       .setAuthor(bot.managers.locale.text(
         `cmd.unknown.title`,
@@ -58,7 +69,7 @@ async function handle_command(bot, message, input, gcfg, perms) {
 
       ratings.push({
         name: searchcmd.name,
-        distance: wink(input.cmd, searchcmd.name)
+        distance: wink(input_cmd, searchcmd.name)
       });
     }
 
@@ -79,7 +90,7 @@ async function handle_command(bot, message, input, gcfg, perms) {
   }
 
   try {
-    return cmd.run(message, input, gcfg);
+    return cmd.run(message, input_args, gcfg);
   }
   catch (err) {
     log(err.stack, `error`);
