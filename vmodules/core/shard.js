@@ -26,6 +26,9 @@ const djs_opts = {
     djs.Intents.FLAGS.GUILDS,
     djs.Intents.FLAGS.GUILD_MESSAGES,
     djs.Intents.FLAGS.DIRECT_MESSAGES
+  ],
+  partials: [
+    `CHANNEL`
   ]
 };
 
