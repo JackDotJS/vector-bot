@@ -43,9 +43,9 @@ async function handle_command(bot, message, gcfg, perms) {
 
   const cmd_not_exist = (cmd == null);
   const cmd_hidden = gcfg.commands.hidden.includes(cmd.name);
-  const cmd_guild_locked = (cmd.guilds != null && !cmd.guilds.includes(message.guild.id));
+  const cmd_guild_exclusive = (cmd.guilds != null && !cmd.guilds.includes(message.guild.id));
 
-  if (cmd_not_exist || cmd_hidden || cmd_guild_locked) {
+  if (cmd_not_exist || cmd_hidden || cmd_guild_exclusive) {
     const embed = new djs.MessageEmbed()
       .setAuthor(bot.managers.locale.text(
         `cmd.unknown.title`,
