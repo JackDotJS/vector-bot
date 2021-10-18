@@ -159,7 +159,8 @@ async function handle_command(bot, message, gcfg, perms) {
         `\`\`\`diff`,
         `- ${formatted}`,
         `\`\`\``
-      ].join(`\n`));
+      ].join(`\n`))
+      .addField(`Keep getting errors?`, `Please be sure to report them at https://github.com/JackDotJS/vector-bot`);
 
     message.reply({ embeds: [embed] });
   }
