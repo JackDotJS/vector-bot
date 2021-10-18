@@ -30,7 +30,7 @@ exports.run = async (message) => {
   const perms = null; // todo
 
   // checks if the input starts with the command prefix, immediately followed by valid characters.
-  const valid_cmd = new RegExp(`^(\\${gcfg.commands.prefixes.join(`|\\`)})(?![^a-zA-Z0-9])[a-zA-Z0-9]+(?=\\s|$)`).test(message.content);
+  const valid_cmd = new RegExp(`^(\\${gcfg.commands.prefixes.join(`|\\`)})[a-zA-Z0-9]+`).test(message.content);
 
   if (valid_cmd) return handle_command(bot, message, gcfg, perms);
 };
