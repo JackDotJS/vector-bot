@@ -27,7 +27,7 @@ const opts = {
 
 exports.opts = opts;
 
-exports.write = (content, level, file, prefix = ``) => {
+exports.write = (content = ``, level, file, prefix = ``) => {
   if (process.send && !opts.onlywrite) {
     if (file == null) {
       const result = getSrc(new Error().stack);
