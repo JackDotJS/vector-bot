@@ -24,7 +24,7 @@ exports.run = async (message) => {
       .setDescription(`[placeholder url](https://discord.gg/s5nQBxFPp2)`)
       .setColor(bot.cfg.colors.default);
 
-    return message.channel.send({ embeds: [ embed ]});
+    return message.channel.send({ embeds: [embed] });
   }
 
   const gcfg = await bot.managers.configs.get(message.guild);
@@ -54,7 +54,7 @@ async function handle_command(bot, message, gcfg, perms) {
         gcfg.commands.prefixes[0] + `help`
       ))
       .setColor(bot.cfg.colors.default);
-    
+
     if (memory.commands.length === 0) return message.reply({ embeds: [embed] });
 
     const ratings = [];
@@ -70,12 +70,12 @@ async function handle_command(bot, message, gcfg, perms) {
       });
     }
 
-    ratings.sort((a,b) => b.distance - a.distance);
+    ratings.sort((a, b) => b.distance - a.distance);
 
     if (ratings[0].distance > 0.5) {
       const desc = bot.managers.locale.text(
         `cmd.unknown.suggestion`,
-        gcfg.lang, 
+        gcfg.lang,
         gcfg.commands.prefixes[0] + ratings[0].name,
         (ratings[0].distance * 100).toFixed(1)
       );
@@ -85,7 +85,7 @@ async function handle_command(bot, message, gcfg, perms) {
 
     return message.reply({ embeds: [embed] });
   };
-  
+
   // command doesnt exist
   if (cmd == null) return unknown();
 
@@ -104,7 +104,7 @@ async function handle_command(bot, message, gcfg, perms) {
     // the following is a bunch of code to print out a clean and simplified version of the error stack
     // of course the full, unedited stack will still appear in the bot's console
     // this code just makes stack traces easier to read without flooding text channels
-    let formatted = [ err.toString() ];
+    let formatted = [err.toString()];
 
     const file_rgx = new RegExp(`${path.parse(process.cwd()).root}\\[^,]+\\d+:\\d+`);
     const trace_rgx = /(?<=at\s)[^\r\n\t\f\v(< ]+/;
@@ -112,7 +112,7 @@ async function handle_command(bot, message, gcfg, perms) {
 
     for (const line of err.stack.split(`\n`)) {
       if (line.includes(`node_modules`)) break;
-    
+
       let file = line.match(file_rgx);
       let trace = line.match(trace_rgx);
       let evalTrace = line.match(evaltrace_rgx);
@@ -123,9 +123,9 @@ async function handle_command(bot, message, gcfg, perms) {
       if (evalTrace) evalTrace = evalTrace[0];
 
       // just to be fucking sure
-      file_rgx.lastIndex = 0; 
-      trace_rgx.lastIndex = 0; 
-      evaltrace_rgx.lastIndex = 0; 
+      file_rgx.lastIndex = 0;
+      trace_rgx.lastIndex = 0;
+      evaltrace_rgx.lastIndex = 0;
 
       let str = ``;
 
