@@ -5,6 +5,7 @@
     "target": "es2020",
     "module": "commonjs",
     "strict": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
@@ -12,5 +13,5 @@
     "noFallthroughCasesInSwitch": true,
     "lib": ["esnext"]
   },
-  "include": ["./src/**/*"],
+  "include": ["./index.ts", "./vmodules/**/*"],
 }

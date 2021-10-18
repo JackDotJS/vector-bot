@@ -1,8 +1,34 @@
-const djs = require(`discord.js`);
+import djs from 'discord.js';
 const log = require(`../util/logger.js`).write;
 
-module.exports = class Command {
-  constructor(cmd = {}) {
+interface ICommand {
+  name: string;
+  description: { short: string, long: string };
+  args: string[] | null;
+  subcmds: string[] | null;
+  guilds: string[] | null;
+  image: string | null;
+  perm: string | null;
+  dm: boolean;
+  typer: boolean;
+  run: Function; // TODO: change this to an interface
+}
+
+export default class Command {
+
+  public name: string;
+  public description: { short: string, long: string };
+  public args: string[] | null;
+  public subcmds: string[] | null;
+  public guilds: string[] | null;
+  public image: string | null;
+  public perm: string | null;
+  public dm: boolean;
+  public typer: boolean;
+  public run: Function; // TODO: change this to an interface
+
+  constructor(cmd: ICommand) {
+
     this.name = cmd.name;
     this.description = {
       short: `This command has no short description.`,

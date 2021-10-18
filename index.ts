@@ -2,14 +2,14 @@
  * VECTOR :: SETUP MANAGER
  */
 
-const child = require(`child_process`);
-const fs = require(`fs`);
-const path = require(`path`);
-const util = require(`util`);
-const readline = require(`readline`);
-const AZip = require(`adm-zip`); // will be using this later
-const pkg = require(`./package.json`);
-const logger = require(`./vmodules/util/logger.js`);
+import child from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import util from 'util';
+import readline from 'readline';
+import AZip from 'adm-zip'; // will be using this later
+import pkg from './package.json';
+import logger from './vmodules/util/logger';
 const log = logger.write;
 
 // ensures bot doesnt end up in a boot loop
@@ -130,14 +130,18 @@ function start() {
     stdio: [`pipe`,`pipe`,`pipe`,`ipc`]
   });
 
-  sm.stdout.setEncoding(`utf8`);
-  sm.stderr.setEncoding(`utf8`);
+  sm.on(`error`, err => {
+    log(err.stack, `fatal`);
+  });
 
-  sm.stdout.on(`data`, (data) => {
+  sm.stdout!.setEncoding(`utf8`);
+  sm.stderr!.setEncoding(`utf8`);
+
+  sm.stdout!.on(`data`, (data) => {
     log(data);
   });
 
-  sm.stderr.on(`data`, (data) => {
+  sm.stderr!.on(`data`, (data) => {
     log(data, `error`);
   });
 
@@ -151,14 +155,12 @@ function start() {
     }
   });
 
-  sm.on(`error`, err => {
-    log(err.stack, `fatal`);
-  });
+  
 
   sm.on(`close`, exit);
 }
 
-function exit(code) {
+function exit(code: number) {
   resetcheck.resets++;
 
   let exit = true;
@@ -231,7 +233,7 @@ function exit(code) {
     opts.crashlog = null;
   }
 
-  setTimeout(() => {
+  setTimeout((): void => {
     if (exit) {
       return process.exit(code);
     }

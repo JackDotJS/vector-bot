@@ -1,6 +1,6 @@
-const path = require(`path`);
-const fs = require(`fs`);
-const memory = require(`../core/api_memory.js`);
+import path from 'path';
+import fs from 'fs';
+import memory from '../core/api_memory';
 
 const handler = {
   route: `/assets/icons`,

@@ -2,8 +2,8 @@
  * VECTOR :: CUSTOM LOGGER
  */
 
-const chalk = require(`chalk`);
-const util = require(`util`);
+import chalk from 'chalk';
+import util from 'util';
 
 function getSrc(trace) {
   const match = trace.split(`\n`)[2].match(/(?<=at\s|\()([^(]*):(\d+):(\d+)\)?$/);

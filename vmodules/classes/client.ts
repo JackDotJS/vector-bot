@@ -1,6 +1,6 @@
-const djs = require(`discord.js`);
-const memory = require(`../core/shard_memory.js`);
-const cfg = require(`../util/bot_config.js`);
+import djs from 'discord.js';
+import memory from '../core/shard_memory';
+import cfg from '../util/bot_config';
 const log = require(`../util/logger.js`).write;
 
 module.exports = class Vector extends djs.Client {
