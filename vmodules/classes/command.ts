@@ -1,31 +1,31 @@
-import djs from 'discord.js';
-const log = require(`../util/logger.js`).write;
+import djs, { Message, PermissionString } from 'discord.js';
+import BotConfig from '../util/interfaces/BotConfig';
 
 interface ICommand {
   name: string;
-  description: { short: string, long: string };
-  args: string[] | null;
-  subcmds: string[] | null;
-  guilds: string[] | null;
-  image: string | null;
-  perm: string | null;
+  description?: { short: string, long: string };
+  args?: string[] | null;
+  subcmds?: string[] | null;
+  guilds?: string[] | null;
+  image?: string | null;
+  perm: PermissionString | null;
   dm: boolean;
-  typer: boolean;
-  run: Function; // TODO: change this to an interface
+  typer?: boolean;
+  run: ((m: Message, args: string[], gcfg: BotConfig) => void) | null; 
 }
 
-export default class Command {
+export default class Command implements ICommand {
 
   public name: string;
-  public description: { short: string, long: string };
-  public args: string[] | null;
-  public subcmds: string[] | null;
-  public guilds: string[] | null;
-  public image: string | null;
-  public perm: string | null;
+  public description?: { short: string, long: string };
+  public args?: string[] | null;
+  public subcmds?: string[] | null;
+  public guilds?: string[] | null;
+  public image?: string | null;
+  public perm: PermissionString | null;
   public dm: boolean;
-  public typer: boolean;
-  public run: Function; // TODO: change this to an interface
+  public typer?: boolean;
+  public run: ((m: Message, args: string[], gcfg: BotConfig) => void) | null;
 
   constructor(cmd: ICommand) {
 
@@ -44,7 +44,7 @@ export default class Command {
     this.run = cmd.run;
 
     // name validation
-    if (typeof cmd.name !== `string` || cmd.name.match(/[^a-zA-Z0-9]/) !== null) {
+    if (cmd.name.match(/[^a-zA-Z0-9]/) !== null) {
       throw new TypeError(`Invalid or unspecified Command property: name`);
     }
 
@@ -58,19 +58,11 @@ export default class Command {
       const long = cmd.description.long;
 
       if (short != null) {
-        if (typeof short !== `string`) {
-          throw new TypeError(`Invalid Command property: description.short`);
-        }
-
         // apply SHORT description, if it exists.
         this.description.short = short;
       }
 
       if (long != null) {
-        if (typeof long !== `string`) {
-          throw new TypeError(`Invalid Command property: description.long`);
-        }
-
         // apply LONG description, if it exists.
         this.description.long = long;
       } 
