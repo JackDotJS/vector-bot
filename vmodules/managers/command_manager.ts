@@ -2,12 +2,11 @@
  * VECTOR :: COMMAND MANAGER
  */
 
-const fs = require(`fs`);
-const Command = require(`../classes/command.js`);
-const memory = require(`../core/shard_memory.js`);
-const log = require(`../util/logger.js`).write;
+import fs from 'fs';
+import Command from '../classes/command';
+import memory from '../core/shard_memory';
 
-module.exports = class CommandManager {
+export default class CommandManager {
   constructor() {
     throw new Error(`Why are you doing this? (Cannot instantiate this class.)`);
   }
@@ -37,7 +36,7 @@ module.exports = class CommandManager {
         log(`Loaded command "${cmd.name}" from ${file.name}`);
       }
       catch (err) {
-        log(`Could not load command from "${file.name}" \n${err.stack}`, `error`);
+        log(`Could not load command from "${file.name}" \n${err instanceof Error ? err.stack : err}`, `error`);
       }
     }
 
@@ -46,12 +45,10 @@ module.exports = class CommandManager {
     return memory.commands;
   }
 
-  static async get(query) {
-    if (query == null || typeof query != `string` || query.length === 0) return null;
-
+  static async get(query: string) {
     query = query.toLowerCase();
 
-    for (const cmd of memory.commands) {
+    for (const cmd of memory.commands!) {
       if (cmd.name === query) return cmd;
     }
 
