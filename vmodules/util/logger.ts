@@ -128,5 +128,6 @@ export function write(content: any, level?: string, file?: string, prefix = ``):
 
   console.log(terminal1 + terminal2);
   if (opts.stream)
+    // @ts-ignore // TODO: check with jack on this
     opts.stream.write(plain1 + plain2);
 };
