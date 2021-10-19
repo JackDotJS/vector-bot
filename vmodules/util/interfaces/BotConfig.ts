@@ -1,3 +1,15 @@
+import { ColorResolvable, ChannelResolvable, RoleResolvable, PermissionString } from "discord.js";
+import Command from '../../classes/command';
+
+interface VectorPermission {
+  name: string | null,
+  type: "PERM" | "USER" | "ROLE",
+  target: PermissionString, // TODO: check with jack on this
+  nodes: string[],
+  priority: number,
+  parent: VectorPermission | null
+}
+
 export default interface BotConfig {
   dev: {
     discord_user_id: string,
@@ -17,5 +29,69 @@ export default interface BotConfig {
   },
   api: {
     port: number
-  }
+  },
+  colors: {
+    default: ColorResolvable
+  },
+  metadata: {
+    version: number,
+    updated: number
+  },
+  lang: 'en_us' | 'en_test',
+  default_lang: string,
+  automation: {
+    auto_cmd: any[],
+    auto_react: any[],
+    auto_reply: any[],
+    auto_mod: any[]
+  },
+  commands: {
+    owo: boolean,
+    prefixes: string[],
+    hidden: Command[], // TODO: check with Jack on this
+    disabled: Command['name'][], // TODO: check with jack on this
+    channel_locked: {
+      name: string,
+      blacklist_mode: boolean,
+      commands: Command[], // TODO: check with jack on this
+      allow_bypass: boolean
+    }[],
+    github_repos: string[],
+    about_splash: string[]
+  },
+  logging: {
+    input: {
+      blacklist_mode: boolean,
+      channels: ChannelResolvable[]
+    },
+    output: {
+      use_webhook: boolean,
+      channels: {
+        channel_add: boolean | null,
+        channel_delete: boolean | null,
+        channel_update: boolean | null,
+        member_ban: boolean | null,
+        member_unban: boolean | null,
+        member_mute: boolean | null,
+        member_unmute: boolean | null,
+        member_kick: boolean | null,
+        member_join: boolean | null,
+        member_leave: boolean | null,
+        record_note_add: boolean | null,
+        record_note_delete: boolean | null,
+        record_update: boolean | null,
+        record_pardon: boolean | null,
+        message_delete: boolean | null,
+        message_edit: boolean | null
+      }
+    }
+  },
+  roles: {
+    vacation: RoleResolvable,
+    muted: RoleResolvable,
+    staffping_groups: any[],
+    grantable_command: any[],
+    grantable_reaction: any[]
+  },
+  permissions: VectorPermission[]
 }
