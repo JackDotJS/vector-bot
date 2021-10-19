@@ -1,7 +1,7 @@
 import { ColorResolvable, ChannelResolvable, RoleResolvable, PermissionString } from "discord.js";
 import Command from '../../classes/command';
 
-interface VectorPermission {
+export interface VectorPermission {
   name: string | null,
   type: "PERM" | "USER" | "ROLE",
   target: PermissionString, // TODO: check with jack on this
@@ -48,7 +48,7 @@ export default interface BotConfig {
   commands: {
     owo: boolean,
     prefixes: string[],
-    hidden: Command[], // TODO: check with Jack on this
+    hidden: Command['name'][], // TODO: check with Jack on this
     disabled: Command['name'][], // TODO: check with jack on this
     channel_locked: {
       name: string,
