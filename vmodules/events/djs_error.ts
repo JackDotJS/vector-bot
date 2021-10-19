@@ -1,4 +1,4 @@
-const log = require(`../util/logger.js`).write;
+import { write as log } from '../util/logger';
 
-exports.name = `error`;
-exports.run = (err) => log(err.stack || err, `error`);
+export const name = `error`;
+export const run = (err: Error | string) => log(err instanceof Error ? err.stack : err, `error`);
