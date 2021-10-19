@@ -1,6 +1,7 @@
-const memory = require(`../core/api_memory.js`);
+import memory from '../core/api_memory';
+import APIHandler from '../util/interfaces/APIHandler';
 
-const handler = {
+const handler: APIHandler = {
   route: `/guildcfg`,
   method: `GET`,
   run: null

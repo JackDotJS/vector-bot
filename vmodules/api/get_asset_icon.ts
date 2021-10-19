@@ -1,8 +1,10 @@
 import path from 'path';
 import fs from 'fs';
 import memory from '../core/api_memory';
+import APIHandler from '../util/interfaces/APIHandler';
 
-const handler = {
+
+const handler: APIHandler = {
   route: `/assets/icons`,
   method: `GET`,
   run: null
