@@ -31,7 +31,10 @@ export default interface BotConfig {
     port: number
   },
   colors: {
-    default: ColorResolvable
+    default: ColorResolvable,
+    error: ColorResolvable,
+    warn: ColorResolvable,
+    okay: ColorResolvable
   },
   metadata: {
     version: number,
