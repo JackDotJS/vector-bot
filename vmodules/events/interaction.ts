@@ -1,9 +1,8 @@
-const memory = require(`../core/shard_memory.js`);
-const log = require(`../util/logger.js`).write;
+import { Interaction } from 'discord.js';
+import { write as log } from '../util/logger';
 
-exports.name = `interactionCreate`;
-exports.run = (int) => {
-  const bot = memory.client;
+export const name = `interactionCreate`;
+export const run = (int: Interaction) => {
   log(`interaction received`);
   log(int);
 };
