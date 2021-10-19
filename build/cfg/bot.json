@@ -1,0 +1,21 @@
+{
+    "dev": {
+        "discord_user_id": "",
+        "user_whitelist": [],
+        "exec": {
+            "verbose": true,
+            "inspect_depth": 2
+        }
+    },
+    "cache": {
+        "guild_id": "",
+        "channel_id": ""
+    },
+    "resetcheck": {
+        "min_reset_warning": 5,
+        "max_resets_per_hour": 50
+    },
+    "api": {
+        "port": 80
+    }
+}
