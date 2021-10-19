@@ -1,7 +1,8 @@
-const log = require(`../util/logger.js`).write;
+import { Guild } from 'discord.js';
+import { write as log } from '../util/logger';
 
-exports.name = `guildUnavailable`;
-exports.run = (guild) => {
+export const name = `guildUnavailable`;
+export const run = (guild: Guild) => {
   log([
     `Guild Unavailable!`,
     `Unable to connect to "${guild.name}"`,
