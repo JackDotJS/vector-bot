@@ -70,22 +70,22 @@ export default interface BotConfig {
     output: {
       use_webhook: boolean,
       channels: {
-        channel_add: boolean | null,
-        channel_delete: boolean | null,
-        channel_update: boolean | null,
-        member_ban: boolean | null,
-        member_unban: boolean | null,
-        member_mute: boolean | null,
-        member_unmute: boolean | null,
-        member_kick: boolean | null,
-        member_join: boolean | null,
-        member_leave: boolean | null,
-        record_note_add: boolean | null,
-        record_note_delete: boolean | null,
-        record_update: boolean | null,
-        record_pardon: boolean | null,
-        message_delete: boolean | null,
-        message_edit: boolean | null
+        channel_add: ChannelResolvable,
+        channel_delete: ChannelResolvable,
+        channel_update: ChannelResolvable,
+        member_ban: ChannelResolvable,
+        member_unban: ChannelResolvable,
+        member_mute: ChannelResolvable,
+        member_unmute: ChannelResolvable,
+        member_kick: ChannelResolvable,
+        member_join: ChannelResolvable,
+        member_leave: ChannelResolvable,
+        record_note_add: ChannelResolvable,
+        record_note_delete: ChannelResolvable,
+        record_update: ChannelResolvable,
+        record_pardon: ChannelResolvable,
+        message_delete: ChannelResolvable,
+        message_edit: ChannelResolvable
       }
     }
   },
