@@ -1,10 +1,32 @@
-import djs from 'discord.js';
+import djs, { ClientOptions } from 'discord.js';
 import memory from '../core/shard_memory';
 import cfg from '../util/bot_config';
-const log = require(`../util/logger.js`).write;
+import { write as log } from '../util/logger';
 
-module.exports = class Vector extends djs.Client {
-  constructor(djs_opts, options = {}) {
+import KeysConfig from '../util/interfaces/KeysConfig';
+import BotConfig from '../util/interfaces/BotConfig';
+
+import assetManager from '../managers/asset_manager';
+import localeManager from '../managers/locale_manager';
+import commandsManager from '../managers/command_manager';
+import configsManager from '../managers/config_manager';
+
+export default class Vector extends djs.Client {
+
+  public keys: KeysConfig;
+  public log: typeof log;
+  public cfg: BotConfig;
+  public debug: boolean;
+  public booting: boolean;
+  public version: string;
+  public managers: {
+    assets: typeof assetManager;
+    locale: typeof localeManager;
+    commands: typeof commandsManager;
+    configs: typeof configsManager;
+  }
+
+  constructor(djs_opts: ClientOptions, options = { debug: false }) {
     super(djs_opts);
 
     this.keys = require(`../../cfg/keys.json`);
@@ -15,10 +37,10 @@ module.exports = class Vector extends djs.Client {
     this.version = require(`../../package.json`).version;
 
     this.managers = {
-      assets: require(`../managers/asset_manager.js`),
-      locale: require(`../managers/locale_manager.js`),
-      commands: require(`../managers/command_manager.js`),
-      configs: require(`../managers/config_manager.js`)
+      assets: assetManager,
+      locale: localeManager,
+      commands: commandsManager,
+      configs: configsManager
     };
 
     memory.client = this;
