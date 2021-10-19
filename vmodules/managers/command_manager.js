@@ -24,7 +24,7 @@ module.exports = class CommandManager {
 
         let add = true;
 
-        for (const ecmd in memory.commands) {
+        for (const ecmd of memory.commands) {
           if (cmd.name === ecmd.name) {
             add = false;
             log(`Could not load command "${cmd.name}" (Name taken)`, `error`);
