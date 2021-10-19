@@ -1,4 +1,4 @@
-const log = require(`../util/logger.js`).write;
+import { write as log } from '../util/logger';
 
-exports.name = `warn`;
-exports.run = (content) => log(content, `warn`);
+export const name = `warn`;
+export const run = (content: string) => log(content, `warn`);
