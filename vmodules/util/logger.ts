@@ -5,7 +5,7 @@
 import chalk from 'chalk';
 import util from 'util';
 
-function getSrc(trace) {
+function getSrc(trace: string) {
   const match = trace.split(`\n`)[2].match(/(?<=at\s|\()([^(]*):(\d+):(\d+)\)?$/);
 
   if (match != null && match.length >= 4) {
@@ -19,23 +19,21 @@ function getSrc(trace) {
   return;
 }
 
-const opts = {
+export const opts = {
   onlywrite: false,
   debug: false,
   stream: null
 };
 
-exports.opts = opts;
-
-exports.write = (content, level, file, prefix = ``) => {
+export function write(content: any, level?: string, file?: string, prefix = ``): void {
   if (process.send && !opts.onlywrite) {
     if (file == null) {
-      const result = getSrc(new Error().stack);
+      const result = getSrc(new Error().stack!);
 
       if (result) file = result;
     }
 
-    return process.send({
+    process.send({
       t: `LOG`,
       c: {
         content,
@@ -44,6 +42,7 @@ exports.write = (content, level, file, prefix = ``) => {
         prefix
       }
     });
+    return;
   }
 
   const now = new Date();
@@ -73,7 +72,7 @@ exports.write = (content, level, file, prefix = ``) => {
   };
 
   if (file == null) {
-    const result = getSrc(new Error().stack);
+    const result = getSrc(new Error().stack!);
 
     if (result) file_path.content = result;
   }
@@ -128,5 +127,6 @@ exports.write = (content, level, file, prefix = ``) => {
   const terminal2 = message.color((prefix.trim() + ` ` + message.content.replace(/\n/g, `\n${(` `.repeat(plain1.length))}`)).trim());
 
   console.log(terminal1 + terminal2);
-  if (opts.stream) opts.stream.write(plain1 + plain2);
+  if (opts.stream)
+    opts.stream.write(plain1 + plain2);
 };
