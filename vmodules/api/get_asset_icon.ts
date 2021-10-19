@@ -1,8 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import memory from '../core/api_memory';
-import APIHandler from '../util/interfaces/APIHandler';
-
+import APIHandler from './interfaces/APIHandler';
 
 const handler: APIHandler = {
   route: `/assets/icons`,
