@@ -9,8 +9,8 @@ import util from 'util';
 import readline from 'readline';
 import AZip from 'adm-zip'; // will be using this later
 import pkg from './package.json';
-import logger from './vmodules/util/logger';
-const log = logger.write;
+import { write as log } from './vmodules/util/logger';
+import IPCMessage from './vmodules/util/interfaces/IPCMessage'
 
 // ensures bot doesnt end up in a boot loop
 const resetcheck = {
@@ -25,7 +25,15 @@ const resetcheck = {
   }, 1000)
 };
 
-const opts = {
+interface IOpts {
+  debug: boolean,
+  crashlog: string | null,
+  log: {
+    filename: string | null,
+    stream: fs.WriteStream | null
+  }
+}
+const opts: IOpts = {
   debug: false,
   crashlog: null,
   log: {
@@ -62,7 +70,8 @@ const cli = readline.createInterface({
 
 const setup_qs = [];
 
-setup_qs.push((resolve, reject) => {
+// TODO: change Function type to Promise.resolve/reject
+setup_qs.push((resolve: Function, reject: Function) => {
   cli.question(`START VECTOR [Y/N]`, (res) => {
     if (res.trim().toLowerCase() === `y`) return resolve();
     if (res.trim().toLowerCase() === `n`) return process.exit();
@@ -70,7 +79,8 @@ setup_qs.push((resolve, reject) => {
   });
 });
 
-setup_qs.push((resolve, reject) => {
+// TODO: change Function type to Promise.resolve/reject
+setup_qs.push((resolve: Function, reject: Function) => {
   console.log([
     `Debug mode enables "DEBUG" level log messages and places the bot into a "development mode", which only allows input from whitelisted users.`,
     ``
@@ -108,9 +118,6 @@ function start() {
   opts.log.filename = new Date().toUTCString().replace(/[/\\?%*:|"<>]/g, `.`);
   opts.log.stream = fs.createWriteStream(`./logs/all/${opts.log.filename}.log`);
 
-  logger.opts.debug = opts.debug;
-  logger.opts.stream = opts.log.stream;
-
   const cfg = require(`./vmodules/util/bot_config.js`)(opts.debug);
 
   if (!opts.debug) {
@@ -145,7 +152,7 @@ function start() {
     log(data, `error`);
   });
 
-  sm.on(`message`, (data = {}) => {
+  sm.on(`message`, (data: IPCMessage) => {
     switch (data.t) {
       case `LOG`:
         log(data.c.content, data.c.level, data.c.file, data.c.prefix);
@@ -154,8 +161,6 @@ function start() {
         log(util.inspect(data)); // to the debugeon with you
     }
   });
-
-  
 
   sm.on(`close`, exit);
 }
@@ -224,11 +229,11 @@ function exit(code: number) {
 
   if (code > 128) log(`Signal exit code ${code - 128}.`, `fatal`);
 
-  opts.log.stream.close();
+  opts.log.stream!.close();
 
   if (report) {
-    opts.crashlog = `./logs/crash/${path.basename(opts.log.stream.path)}`;
-    fs.copyFileSync(opts.log.stream.path, opts.crashlog);
+    opts.crashlog = `./logs/crash/${path.basename(opts.log.stream!.path.toString())}`;
+    fs.copyFileSync(opts.log.stream!.path, opts.crashlog);
   } else {
     opts.crashlog = null;
   }
