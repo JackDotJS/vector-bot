@@ -2,18 +2,17 @@
  * VECTOR :: GUILD CONFIG MANAGER
  */
 
-const djs = require(`discord.js`);
-const fetch = require(`node-fetch`);
-const memory = require(`../core/shard_memory.js`);
-const log = require(`../util/logger.js`).write;
+import fetch from 'node-fetch';
+import memory from '../core/shard_memory.js';
+import { write as log } from '../util/logger';
 
-module.exports = class ConfigManager {
+export default class ConfigManager {
   constructor() {
     throw new Error(`Why are you doing this? (Cannot instantiate this class.)`);
   }
 
-  static async get(id) {
-    const bot = memory.client;
+  static async get(id: string) {
+    const bot = memory.client!;
 
     if (bot.guilds.resolveId(id) == null) return null;
     
@@ -24,8 +23,10 @@ module.exports = class ConfigManager {
 
     log(data);
 
+    // @ts-ignore // TODO: what the fuck is the `unknown` type and how do i type check it against APIMessage
     if (data.doc == null) return template;
 
+    // @ts-ignore // TODO: what the fuck is the `unknown` type and how do i type check it against APIMessage
     return Object.assign(template, data.doc);
   }
 };
