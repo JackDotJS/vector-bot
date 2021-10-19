@@ -2,9 +2,9 @@
  * VECTOR :: API MEMORY CORE
  */
 
-const db = require(`nedb-promises`);
+import db from 'nedb-promises';
 
-module.exports = {
+export default {
   app: null,
   server: null,
   cfg: null,
