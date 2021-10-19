@@ -1,7 +1,8 @@
-const log = require(`../util/logger.js`).write;
+import { Guild } from 'discord.js';
+import { write as log } from '../util/logger';
 
-exports.name = `guildUpdate`;
-exports.run = (oldg, newg) => {
+export const name = `guildUpdate`;
+export const run = (oldg: Guild, newg: Guild) => {
   if (oldg.available && newg.available) return;
   log([
     `Guild Available!`,
