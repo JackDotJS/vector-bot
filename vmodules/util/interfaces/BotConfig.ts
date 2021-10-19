@@ -53,7 +53,7 @@ export default interface BotConfig {
     channel_locked: {
       name: string,
       blacklist_mode: boolean,
-      commands: Command[], // TODO: check with jack on this
+      commands: Command['name'], // TODO: check with jack on this
       allow_bypass: boolean
     }[],
     github_repos: string[],
