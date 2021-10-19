@@ -2,19 +2,19 @@
  * VECTOR :: COMMAND MANAGER
  */
 
-const path = require(`path`);
-const fs = require(`fs`);
-const memory = require(`../core/shard_memory.js`);
-const log = require(`../util/logger.js`).write;
-const merge = require(`../util/deep_merge.js`);
+import path from 'path';
+import fs from 'fs';
+import memory from '../core/shard_memory.js';
+import { write as log } from '../util/logger';
+import merge from '../util/deep_merge.js';
 
-module.exports = class LocaleManager {
+export default class LocaleManager {
   constructor() {
     throw new Error(`Why are you doing this? (Cannot instantiate this class.)`);
   }
 
   static async load() {
-    const bot = memory.client;
+    const bot = memory.client!;
 
     memory.lang.index = [];
 
@@ -41,7 +41,7 @@ module.exports = class LocaleManager {
         }
       }
       catch (err) {
-        log(`Could not load language index "${file.name}" \n${err.stack}`, `error`);
+        log(`Could not load language index "${file.name}" \n${err instanceof Error ? err.stack : err}`, `error`);
       }
     }
 
@@ -50,10 +50,8 @@ module.exports = class LocaleManager {
     return memory.lang.index;
   }
 
-  static text(query, lang, ...opts) {
+  static text(query: string, lang: string, ...opts: string[]) {
     const defaultstr = `locale_text_error`;
-
-    if (query == null || typeof query != `string` || query.length === 0) return defaultstr;
 
     query = query.toLowerCase();
 
