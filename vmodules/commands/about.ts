@@ -1,9 +1,8 @@
-const djs = require(`discord.js`);
-const memory = require(`../core/shard_memory.js`);
-const Command = require(`../classes/command.js`);
-const log = require(`../util/logger.js`).write;
+import djs from 'discord.js';
+import memory from '../core/shard_memory';
+import Command from '../classes/command';
 
-const metadata = {
+const metadata: Command = {
   name: `about`,
   description: {
     short: `A quick introduction to Vector.`,
@@ -15,12 +14,12 @@ const metadata = {
 };
 
 metadata.run = async (m, args, gcfg) => {
-  const bot = memory.client;
+  const bot = memory.client!;
 
   const embed = new djs.MessageEmbed()
     .setColor(bot.cfg.colors.default)
-    .setAuthor(`About`, await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default))
-    .setThumbnail(bot.user.displayAvatarURL({ format: `png`, size: 64 }))
+    .setAuthor(`About`, await bot.managers.assets.getIcon(`info`, (bot.cfg.colors.default as string)))
+    .setThumbnail(bot.user!.displayAvatarURL({ format: `png`, size: 64 }))
     .setTitle(`Vector: The Server Management Bot`)
     .setURL(`https://github.com/JackDotJS/vector-bot`)
     .setDescription(gcfg.commands.about_splash[~~(Math.random() * gcfg.commands.about_splash.length)])
