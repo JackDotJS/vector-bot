@@ -13,7 +13,7 @@
   "commands": {
     "owo": false,
     "prefixes": [ "?" ],
-    "hidden": [],
+    "hidden": [ "sweeper" ],
     "disabled": [ "mute", "staffping", "lock", "unlock" ],
     "channel_locked": [
       {
