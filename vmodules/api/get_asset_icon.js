@@ -26,9 +26,7 @@ handler.run = async (req, res) => {
     });
   }
 
-  res.status(404).json({
-    message: `Could not find specified file.`
-  });
+  res.status(404).json({ message: `wtf are u looking for` });
 };
 
 module.exports = handler;
