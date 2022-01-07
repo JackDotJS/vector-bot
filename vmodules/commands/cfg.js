@@ -26,7 +26,7 @@ metadata.run = async (m, args, gcfg) => {
     .setAuthor(`Vector Config`, await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default))
     .setTitle(`Click here to open Config Editor.`)
     .setDescription(`Link valid for 30 seconds, or until used.`)
-    .setURL(`${bot.cfg.editor.url}:${bot.cfg.editor.port}/config?token=${token_data.token}`);
+    .setURL(`${bot.cfg.editor.url}/config?token=${token_data.token}`);
 
   m.reply({ embeds: [embed] });
 };
