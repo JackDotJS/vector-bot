@@ -7,6 +7,16 @@
       "inspect_depth": 2
     }
   },
+  "editor": {
+    "url": "http://localhost"
+  },
+  "default_lang": "en_us",
+  "colors": {
+    "default": "#5865F2",
+    "okay": "#43B581",
+    "warn": "#FAA61A",
+    "error": "#F04747"
+  },
   "cache": {
     "guild_id": "",
     "channel_id": ""
