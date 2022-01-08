@@ -22,7 +22,7 @@
     "iso-639-1": "^2.1.9",
     "jaro-winkler": "^0.2.8",
     "jimp": "^0.16.1",
-    "jose": "^4.3.7",
+    "jsonwebtoken": "^8.5.1",
     "nedb-promises": "^5.0.0",
     "node-fetch": "^2.6.1",
     "string-similarity": "^3.0.0",
