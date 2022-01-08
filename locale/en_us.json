@@ -4,6 +4,9 @@
       "title": "Unknown Command",
       "suggestion": "Perhaps you meant `%%0%%`? (%%1%%% match)",
       "help": "Type %%0%% for a list of commands."
+    },
+    "disabled": {
+      "title": "Sorry, this command has been disabled by server staff."
     }
   }
 }
