@@ -2,7 +2,6 @@
   "name": "vector-bot",
   "version": "0.1.0-vdev",
   "description": "A Discord bot for advanced moderation & server management.",
-  "type": "module",
   "homepage": "https://discord.gg/s5nQBxFPp2",
   "repository": {
     "type": "git",

@@ -52,23 +52,23 @@ export function write(content: any, level?: string, file?: string, prefix = ``):
   const ms = now.getUTCMilliseconds().toString().padStart(3, `0`);
 
   const timestamp = {
-    color: white,
+    color: chalk.white,
     content: `${hh}:${mm}:${ss}.${ms}`
   };
 
   const file_path = {
-    color: yellow,
+    color: chalk.yellow,
     content: file
   };
 
   const log_level = {
-    color: magenta,
+    color: chalk.magenta,
     content: `DEBUG`
   };
 
   const message = {
     content,
-    color: white
+    color: chalk.white
   };
 
   if (file == null) {
@@ -84,20 +84,20 @@ export function write(content: any, level?: string, file?: string, prefix = ``):
 
     switch (level.toLowerCase()) {
       case `fatal`:
-        log_level.color = inverse.bgRedBright;
-        message.color = redBright;
+        log_level.color = chalk.inverse.bgRedBright;
+        message.color = chalk.redBright;
         break;
       case `error`:
-        log_level.color = red;
-        message.color = red;
+        log_level.color = chalk.red;
+        message.color = chalk.red;
         break;
       case `warn`:
-        log_level.color = yellowBright;
-        message.color = yellowBright;
+        log_level.color = chalk.yellowBright;
+        message.color = chalk.yellowBright;
         break;
       case `info`:
-        log_level.color = white;
-        message.color = whiteBright;
+        log_level.color = chalk.white;
+        message.color = chalk.whiteBright;
         break;
       default:
         if (!opts.debug) return;
@@ -105,13 +105,13 @@ export function write(content: any, level?: string, file?: string, prefix = ``):
   }
 
   if (typeof content !== `string`) {
-    message.color = yellowBright;
+    message.color = chalk.yellowBright;
     if (content instanceof Error) {
       message.content = content.stack;
     } else if (Buffer.isBuffer(content)) {
       message.content = content.toString();
     } else {
-      message.content = inspect(content, { getters: true, showHidden: true });
+      message.content = util.inspect(content, { getters: true, showHidden: true });
     }
   }
 
