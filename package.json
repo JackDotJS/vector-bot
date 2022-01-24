@@ -15,7 +15,6 @@
   "dependencies": {
     "adm-zip": "^0.4.13",
     "chalk": "^4.1.1",
-    "chokidar": "^3.5.1",
     "discord.js": "^13.1.0",
     "express": "^4.17.1",
     "file-type": "^12.4.2",
@@ -24,6 +23,7 @@
     "iso-639-1": "^2.1.9",
     "jaro-winkler": "^0.2.8",
     "jimp": "^0.16.1",
+    "jsonwebtoken": "^8.5.1",
     "nedb-promises": "^5.0.0",
     "node-fetch": "^2.6.1",
     "string-similarity": "^3.0.0",
