@@ -18,10 +18,10 @@ exports.run = async (int) => {
 
   if (int.guild == null) {
     const embed = new djs.MessageEmbed()
-      .setAuthor(
+      .setAuthor({ name: 
         `Sorry, this bot cannot be used in direct messages.`, 
-        await bot.managers.assets.getIcon(`error`, bot.cfg.colors.error)
-      )
+        iconURL: await bot.managers.assets.getIcon(`error`, bot.cfg.colors.error)
+      })
       .setColor(bot.cfg.colors.error);
 
     return int.reply({ embeds: [embed] });
@@ -32,10 +32,10 @@ exports.run = async (int) => {
 
   if (gcfg.commands.disabled.includes(int.commandName)) {
     const embed = new djs.MessageEmbed()
-      .setAuthor(
+      .setAuthor({ name: 
         bot.managers.locale.text(`cmd.disabled.title`, gcfg.lang), 
-        await bot.managers.assets.getIcon(`error`, bot.cfg.colors.error)
-      )
+        iconURL: await bot.managers.assets.getIcon(`error`, bot.cfg.colors.error)
+      })
       .setColor(bot.cfg.colors.error);
     
     return int.reply({ embeds: [embed] });
