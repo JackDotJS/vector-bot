@@ -12,6 +12,10 @@ module.exports = class ConfigManager {
     throw new Error(`Why are you doing this? (Cannot instantiate this class.)`);
   }
 
+  static async update() {
+    // todo
+  }
+
   static async get(id) {
     const bot = memory.client;
 
