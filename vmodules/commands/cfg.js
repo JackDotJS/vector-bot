@@ -23,7 +23,7 @@ metadata.run = async (m, args, gcfg) => {
 
   const embed = new djs.MessageEmbed()
     .setColor(bot.cfg.colors.default)
-    .setAuthor(`Vector Config`, await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default))
+    .setAuthor({ name: `Vector Config`, iconURL: await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default) })
     .setTitle(`Click here to open Config Editor.`)
     .setDescription(`Link valid for 30 seconds, or until used.`)
     .setURL(`${bot.cfg.editor.url}/config?token=${token_data.token}`);
