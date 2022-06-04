@@ -1,8 +1,0 @@
-/.local
-node_modules
-data
-logs
-cfg/bot.json
-cfg/bot_debug.json
-cfg/keys.json
-*.blend[0-9]
