@@ -1,0 +1,32 @@
+{
+  "name": "vector-bot",
+  "version": "3.0.0",
+  "description": "A Discord bot for advanced moderation & server management",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JackDotJS/vector-bot.git"
+  },
+  "author": "JackDotJS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JackDotJS/vector-bot/issues"
+  },
+  "homepage": "https://github.com/JackDotJS/vector-bot#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.39",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.17.0",
+    "eslint-plugin-import": "^2.26.0",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "discord.js": "^13.7.0"
+  }
+}

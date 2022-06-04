@@ -1,0 +1,63 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "es2021": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "import"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "no-console": "off",
+    "indent": [
+      "warn",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "quotes": [
+      "warn",
+      "backtick"
+    ],
+    "semi": "off",
+    "space-before-blocks": [
+      "warn",
+      {
+        "functions": "always",
+        "keywords": "always",
+        "classes": "always"
+      }
+    ],
+    "prefer-const": [
+      "warn",
+      {
+        "destructuring": "any",
+        "ignoreReadBeforeAssign": false
+      }
+    ],
+    "no-unused-vars": "off",
+    "no-var": "error",
+    "no-empty": "off",
+    "eqeqeq": "error",
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": false
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/semi": "warn"
+  }
+}
