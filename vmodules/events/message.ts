@@ -21,7 +21,7 @@ exports.run = async (message: Message) => {
   if (message.channel.type === `DM`) {
     // can't use locale in DM since there's no access to guild configs
     const embed = new djs.MessageEmbed()
-      .setAuthor(`Vector`, await bot.managers.assets.getIcon(`info`, (bot.cfg.colors.default as string)))
+      .setAuthor({ name: `Vector`, iconURL: await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default) })
       .setTitle(`A Discord bot for advanced moderation & server management.`)
       .setDescription(`[placeholder url](https://discord.gg/s5nQBxFPp2)`)
       .setColor(bot.cfg.colors.default);
@@ -49,15 +49,15 @@ async function handle_command(bot: Vector, message: Message, gcfg: BotConfig, /*
 
   const unknown = async () => {
     const embed = new djs.MessageEmbed()
-      .setAuthor(bot.managers.locale.text(
+      .setAuthor({ name: bot.managers.locale.text(
         `cmd.unknown.title`,
         gcfg.lang
-      ), await bot.managers.assets.getIcon(`info`, (bot.cfg.colors.default as string)))
-      .setFooter(bot.managers.locale.text(
+      ), iconURL: await bot.managers.assets.getIcon(`info`, bot.cfg.colors.default) })
+      .setFooter({ text: bot.managers.locale.text(
         `cmd.unknown.help`,
         gcfg.lang,
         gcfg.commands.prefixes[0] + `help`
-      ))
+      ) })
       .setColor(bot.cfg.colors.default);
 
     if (memory.commands === null || memory.commands.length === 0)
@@ -180,7 +180,7 @@ async function handle_command(bot: Vector, message: Message, gcfg: BotConfig, /*
     const formattedDeDuped = [...new Set(formatted)].join(`\n    at `);
 
     const embed = new djs.MessageEmbed()
-      .setAuthor(`Something went wrong.`, await bot.managers.assets.getIcon(`error`, (bot.cfg.colors.error as string)))
+      .setAuthor({ name: `Something went wrong.`, iconURL: await bot.managers.assets.getIcon(`error`, bot.cfg.colors.error) })
       .setColor(bot.cfg.colors.error)
       .setDescription([
         `\`\`\`diff`,

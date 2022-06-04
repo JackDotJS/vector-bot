@@ -11,8 +11,12 @@ export default class ConfigManager {
     throw new Error(`Why are you doing this? (Cannot instantiate this class.)`);
   }
 
-  static async get(id: string) {
-    const bot = memory.client!;
+  static async update() {
+    // todo
+  }
+
+  static async get(id) {
+    const bot = memory.client;
 
     if (bot.guilds.resolveId(id) == null) return null;
     

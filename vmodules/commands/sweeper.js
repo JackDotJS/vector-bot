@@ -199,7 +199,7 @@ metadata.run = async (m) => {
   };
 
   const embed = new djs.MessageEmbed()
-    .setAuthor(`Bombsweeper`)
+    .setAuthor({ name: `Bombsweeper` })
     .setColor(bot.cfg.colors.default)
     .setDescription([
       `Mines: ${mines}`
