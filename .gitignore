@@ -7,8 +7,6 @@ build/
 
 .vscode/
 
-cfg/keys.json
-
 ### Node ###
 # Logs
 logs
@@ -150,3 +148,11 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node
+
+
+# Vector: Auto-generated Folders
+data
+.local
+
+# Vector: Private Files
+cfg/keys.json
