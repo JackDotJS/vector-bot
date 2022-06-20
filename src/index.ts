@@ -6,12 +6,12 @@ process.title = `Vector Bot ${pkg.version}`;
 
 // create directories that may or may not exist because Git(TM)
 const mkdirs = [
-  `../.local`,
-  `../data`,
-  `../data/archive`,
-  `../logs/crash`,
-  `../logs/archive`,
-  `../logs/all`
+  `./.local`,
+  `./data`,
+  `./data/archive`,
+  `./logs/crash`,
+  `./logs/archive`,
+  `./logs/all`
 ];
 
 for (const item of mkdirs) {
