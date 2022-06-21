@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as util from 'util';
 import * as pkg from '../package.json';
+import isInterface from './util/isInterface';
 
 
 process.title = `Vector Bot ${pkg.version}`;
@@ -20,6 +21,10 @@ for (const item of mkdirs) {
   }
 }
 
+interface ErrorWithCode extends Error {
+  code?: string
+}
+
 try {
   // try making file if it does not exist
   const data = {
@@ -28,10 +33,12 @@ try {
   };
 
   fs.writeFileSync(`./data/resets`, JSON.stringify(data), { encoding: `utf8`, flag: `ax` });
-}
-catch (e: any) {
-  if (e.code !== `EEXIST`) {
-    throw e;
+} catch (e: unknown) {
+
+  if (isInterface<ErrorWithCode>(e, `code`)) {
+    if (e.code !== `EEXIST`) {
+      throw e;
+    }
   }
 
   const oldData = fs.readFileSync(`./data/resets`, { encoding: `utf8` });
