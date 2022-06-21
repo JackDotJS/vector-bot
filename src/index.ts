@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 // import * as util from 'util';
 import { version } from '../package.json';
+import isInterface from './util/isInterface';
 
 process.title = `Vector Bot ${version}`;
 
@@ -19,6 +20,10 @@ for (const item of mkdirs) {
   }
 }
 
+interface ErrorWithCode extends Error {
+  code?: string
+}
+
 try {
   // try making file if it does not exist
   const data = {
@@ -27,10 +32,12 @@ try {
   };
 
   writeFileSync(`./data/resets`, JSON.stringify(data), { encoding: `utf8`, flag: `ax` });
-}
-catch (e: any) {
-  if (e.code !== `EEXIST`) {
-    throw e;
+} catch (e: unknown) {
+
+  if (isInterface<ErrorWithCode>(e, `code`)) {
+    if (e.code !== `EEXIST`) {
+      throw e;
+    }
   }
 
   const oldData = readFileSync(`./data/resets`, { encoding: `utf8` });
@@ -47,7 +54,9 @@ catch (e: any) {
 
     console.log(`filedata successful read`);
   }
-  catch (je) {}
+  catch (je) { 
+    console.warn(`JSON data was invalid or corrupted. Overwriting with default values...`);
+  }
 
   // if it's been more than an hour, reset the login count
   const now = new Date().getTime();
