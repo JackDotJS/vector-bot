@@ -55,7 +55,9 @@ try {
 
     console.log(`filedata successful read`);
   }
-  catch (je) {}
+  catch (je) { 
+    console.warn(`JSON data was invalid or corrupted. Overwriting with default values...`);
+  }
 
   // if it's been more than an hour, reset the login count
   const now = new Date().getTime();
@@ -67,7 +69,7 @@ try {
   json.logins++;
 
   console.log(`login count: ${json.logins}`);
-  
+
   fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
 }
 
