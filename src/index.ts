@@ -1,9 +1,8 @@
-import * as fs from 'fs';
-import * as util from 'util';
-import * as pkg from '../package.json';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
+// import * as util from 'util';
+import { version } from '../package.json';
 
-
-process.title = `Vector Bot ${pkg.version}`;
+process.title = `Vector Bot ${version}`;
 
 // create directories that may or may not exist because Git(TM)
 const mkdirs = [
@@ -15,8 +14,8 @@ const mkdirs = [
 ];
 
 for (const item of mkdirs) {
-  if (!fs.existsSync(item)) {
-    fs.mkdirSync(item, { recursive: true });
+  if (!existsSync(item)) {
+    mkdirSync(item, { recursive: true });
   }
 }
 
@@ -27,14 +26,14 @@ try {
     time: new Date().getTime()
   };
 
-  fs.writeFileSync(`./data/resets`, JSON.stringify(data), { encoding: `utf8`, flag: `ax` });
+  writeFileSync(`./data/resets`, JSON.stringify(data), { encoding: `utf8`, flag: `ax` });
 }
 catch (e: any) {
   if (e.code !== `EEXIST`) {
     throw e;
   }
 
-  const oldData = fs.readFileSync(`./data/resets`, { encoding: `utf8` });
+  const oldData = readFileSync(`./data/resets`, { encoding: `utf8` });
 
   let json = {
     logins: 0,
@@ -61,7 +60,7 @@ catch (e: any) {
 
   console.log(`login count: ${json.logins}`);
   
-  fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
+  writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
 }
 
 // we did it reddit
