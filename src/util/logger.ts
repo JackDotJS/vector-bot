@@ -14,21 +14,23 @@ export default class Logger {
 
   private readonly timestamp: string = chalk.grey(`[${DateTime.now().toLocaleString()}]`);
   private readonly writeToFile = true; // Write to log files by default
-  private readonly isShard: boolean;
 
   constructor(options?: LoggerOptions) {
     if (options?.writeToFile) {
       this.writeToFile = options.writeToFile;
     }
     
-    // Check for the existence of a process.send function. If it exists, we know we've been spawned from another process.
-    this.isShard = Boolean(process.send);     
   }
 
   /**
    * generic, everyday logging.
    */
   public log(info: string): void {
+    if (process.send) {
+      process.send({ type: `log`, content: info });
+      return;
+    }
+    
     return console.log(`${this.timestamp} ${chalk.blue(`info:`)} ${info} `);
   }
 
@@ -36,6 +38,11 @@ export default class Logger {
    * for things that *could* be a problem but *should* be fine..?    
    */
   public warn(info: string): void {
+    if (process.send) {
+      process.send({ type: `warn`, content: info });
+      return;
+    }
+
     return console.warn(`${this.timestamp} ${chalk.yellow(`warn:`)} ${info} `);
   }
 
@@ -43,6 +50,11 @@ export default class Logger {
    * generic, everyday erroring
    */
   public error(info: Error | string): void {
+    if (process.send) {
+      process.send({ type: `error`, content: info });
+      return;
+    }
+
     if (info instanceof Error) {
       info = (info.stack ?? info.message)
         .split(`\n`)
@@ -58,6 +70,11 @@ export default class Logger {
    * for when there's an unexpected error that we haven't sent to logger.error
    */
   public fatal(info: Error | string): void {
+    if (process.send) {
+      process.send({ type: `fatal`, content: info });
+      return;
+    }
+
     if (info instanceof Error) {
       info = (info.stack ?? info.message)
         .split(`\n`)
@@ -75,7 +92,12 @@ export default class Logger {
   public verbose(info: unknown): void {
     if (typeof info === `object`)
       info = inspect(info, { depth: 0, colors: true });
-
+    
+    if (process.send) {
+      process.send({ type: `verbose`, content: info });
+      return;
+    }
+      
     if (info instanceof Error)
       info = (info.stack ?? info.message)
         .split(`\n`)

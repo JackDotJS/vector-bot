@@ -4,10 +4,13 @@ import { ShardingManager } from 'discord.js';
 
 import * as pkg from '../package.json';
 import isInterface from './util/isInterface';
+import Logger, { LoggingLevel } from './util/logger';
 import keys from '../cfg/keys.json';
 
 
 process.title = `Vector Bot ${pkg.version}`;
+
+const logger = new Logger();
 
 // create directories that may or may not exist because Git(TM)
 const mkdirs = [
@@ -56,7 +59,7 @@ try {
     // if the data is corrupt or otherwise invalid, we'll simply overwrite it with some default values.
     json = JSON.parse(oldData);
 
-    console.log(`filedata successful read`);
+    logger.verbose(`filedata successful read`);
   }
   catch (je) { 
     console.warn(`JSON data was invalid or corrupted. Overwriting with default values...`);
@@ -71,15 +74,53 @@ try {
 
   json.logins++;
 
-  console.log(`login count: ${json.logins}`);
+  logger.verbose(`login count: ${json.logins}`);
 
   fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
 }
 
 // we did it reddit
-console.log(`:)`);
+logger.verbose(`:)`);
 
 const shardingManager = new ShardingManager(`./build/src/bot.js`, { token: keys.discord });
-shardingManager.on(`shardCreate`, shard => console.log(`Launched shard ${shard.id}`));
+
+interface ShardMessage {
+  type: LoggingLevel,
+  content: string
+}
+shardingManager.on(`shardCreate`, shard => {
+  logger.log(`Launched shard ${shard.id}`);
+
+  const shardID = shard.id + 1;
+
+  shard.on(`message`, (message: ShardMessage) => {
+    switch (message.type) {
+      case `log`: {
+        logger.log(`[${shardID}] ${message.content}`);
+        break;
+      }
+      case `warn`: {
+        logger.warn(`[${shardID}] ${message.content}`);
+        break;
+      }
+      case `error`: {
+        logger.error(`[${shardID}] ${message.content}`);
+        break;
+      }
+      case `fatal`: {
+        logger.fatal(`[${shardID}] ${message.content}`);
+        break;
+      }
+      case `verbose`: {
+        logger.verbose(`[${shardID}] ${message.content}`);
+        break;
+      }
+      default: {
+        logger.warn(`[Master] Unexpected message from shard ${shardID}: ${message}`);
+        break;
+      }
+    }
+  });
+});
 
 shardingManager.spawn();
