@@ -14,11 +14,15 @@ export default class Logger {
 
   private readonly timestamp: string = chalk.grey(`[${DateTime.now().toLocaleString()}]`);
   private readonly writeToFile = true; // Write to log files by default
+  private readonly isShard: boolean;
 
   constructor(options?: LoggerOptions) {
     if (options?.writeToFile) {
       this.writeToFile = options.writeToFile;
     }
+    
+    // Check for the existence of a process.send function. If it exists, we know we've been spawned from another process.
+    this.isShard = Boolean(process.send);     
   }
 
   /**
