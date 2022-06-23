@@ -3,10 +3,23 @@
 import chalk from "chalk";
 import { DateTime } from "luxon";
 import { inspect } from "util";
+import { appendFile } from "fs/promises";
+
+type LogType = `all` | `archive` | `crash`;
+interface LoggerOptions {
+  writeToFile?: boolean
+}
 
 export default class Logger {
 
   private readonly timestamp: string = chalk.grey(`[${DateTime.now().toLocaleString()}]`);
+  private readonly writeToFile = true; // Write to log files by default
+
+  constructor(options?: LoggerOptions) {
+    if (options?.writeToFile) {
+      this.writeToFile = options.writeToFile;
+    }
+  }
 
   /**
    * generic, everyday logging.
@@ -65,6 +78,13 @@ export default class Logger {
         .join(`\n${this.timestamp} ${chalk.grey(`verbose:`)}`);
 
     return console.log(`${this.timestamp} ${chalk.gray(`verbose:`)} ${chalk.gray(info)} `);
+  }
+
+  private async appendToLog(log: LogType, content: string): Promise<void> {
+    if (!this.writeToFile) return;
+
+    const toWrite = `${this.timestamp} ${log.toUpperCase()} ${content}`;
+    await appendFile(`./logs/${log}/`, toWrite);
   }
 
 }
