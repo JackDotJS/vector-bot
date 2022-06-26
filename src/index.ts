@@ -1,19 +1,18 @@
 /**
- * VECTOR :: INITIALIZATION SCRIPT
+ * VECTOR :: INITIALIZATION AND SHARD MANAGEMENT
  */
 
 import * as fs from 'fs';
 // import * as util from 'util';
 import { ShardingManager } from 'discord.js';
-
 import * as pkg from '../package.json';
 import * as cfg from '../config/bot.json';
 import isInterface from './util/isInterface';
 import keys from '../config/keys.json';
 
-
 process.title = `Vector Bot ${pkg.version}`;
 
+const debugMode = process.argv.includes(`--debug`) || process.argv.includes(`-d`);
 let logins = 1;
 
 // create directories that may or may not exist because Git(TM)
@@ -86,19 +85,27 @@ try {
   fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
 }
 
-if (logins > cfg.loginLimit.warning) {
-  console.log(`warning: lots of resets`);
-}
-
-if (logins > cfg.loginLimit.shutdown) {
-  console.log(`error: too many resets`);
-  process.exit(1);
+// check login count before proceeding
+if (debugMode) {
+  if (logins === cfg.loginLimit.absolute) {
+    console.log(`error: too many resets`);
+    process.exit(1);
+  }
+} else {
+  if (logins > cfg.loginLimit.warning) {
+    console.log(`warning: lots of resets`);
+  }
+  
+  if (logins > cfg.loginLimit.shutdown) {
+    console.log(`error: too many resets`);
+    process.exit(1);
+  }
 }
 
 // we did it reddit
 console.log(`:)`);
 
-const shardingManager = new ShardingManager(`./build/src/bot.js`, { token: keys.discord });
+const shardingManager = new ShardingManager(`./build/src/shard.js`, { token: keys.discord });
 shardingManager.on(`shardCreate`, shard => console.log(`Launched shard ${shard.id}`));
 
 shardingManager.spawn();
