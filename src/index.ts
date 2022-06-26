@@ -3,9 +3,14 @@
  */
 
 import * as fs from 'fs';
-import * as util from 'util';
+// import * as util from 'util';
+import { ShardingManager } from 'discord.js';
+
 import * as pkg from '../package.json';
 import * as cfg from '../config/bot.json';
+import isInterface from './util/isInterface';
+import keys from '../config/keys.json';
+
 
 process.title = `Vector Bot ${pkg.version}`;
 
@@ -27,6 +32,9 @@ for (const item of mkdirs) {
 }
 
 // check login count, to prevent API spam in the case of a boot loop
+interface ErrorWithCode extends Error {
+  code?: string
+}
 
 try {
   // try making file if it does not exist
@@ -36,11 +44,12 @@ try {
   };
 
   fs.writeFileSync(`./data/resets`, JSON.stringify(data), { encoding: `utf8`, flag: `ax` });
-}
+} catch (e: unknown) {
 
-catch (e: any) {
-  if (e.code !== `EEXIST`) {
-    throw e;
+  if (isInterface<ErrorWithCode>(e, `code`)) {
+    if (e.code !== `EEXIST`) {
+      throw e;
+    }
   }
 
   const oldData = fs.readFileSync(`./data/resets`, { encoding: `utf8` });
@@ -57,7 +66,9 @@ catch (e: any) {
 
     console.log(`filedata successful read`);
   }
-  catch (je) {}
+  catch (je) { 
+    console.warn(`JSON data was invalid or corrupted. Overwriting with default values...`);
+  }
 
   // if it's been more than an hour, reset the login count
   const now = new Date().getTime();
@@ -71,7 +82,7 @@ catch (e: any) {
   logins = json.logins;
 
   console.log(`login count: ${json.logins}`);
-  
+
   fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
 }
 
@@ -86,3 +97,8 @@ if (logins > cfg.loginLimit.shutdown) {
 
 // we did it reddit
 console.log(`:)`);
+
+const shardingManager = new ShardingManager(`./build/src/bot.js`, { token: keys.discord });
+shardingManager.on(`shardCreate`, shard => console.log(`Launched shard ${shard.id}`));
+
+shardingManager.spawn();
