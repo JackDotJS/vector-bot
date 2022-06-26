@@ -69,7 +69,7 @@ try {
     logger.verbose(`filedata successful read`);
   }
   catch (je) { 
-    console.warn(`JSON data was invalid or corrupted. Overwriting with default values...`);
+    logger.warn(`JSON data was invalid or corrupted. Overwriting with default values...`);
   }
 
   // if it's been more than an hour, reset the login count
@@ -91,16 +91,16 @@ try {
 // check login count before proceeding
 if (debugMode) {
   if (logins === cfg.loginLimit.absolute) {
-    console.log(`error: too many resets`);
+    logger.fatal(`error: too many resets`);
     process.exit(1);
   }
 } else {
   if (logins > cfg.loginLimit.warning) {
-    console.log(`warning: lots of resets`);
+    logger.warn(`warning: lots of resets`);
   }
   
   if (logins > cfg.loginLimit.shutdown) {
-    console.log(`error: too many resets`);
+    logger.fatal(`error: too many resets`);
     process.exit(1);
   }
 }
