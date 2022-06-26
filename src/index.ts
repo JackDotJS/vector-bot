@@ -105,7 +105,13 @@ if (debugMode) {
 // we did it reddit
 console.log(`:)`);
 
-const shardingManager = new ShardingManager(`./build/src/shard.js`, { token: keys.discord });
-shardingManager.on(`shardCreate`, shard => console.log(`Launched shard ${shard.id}`));
+const options = {
+  token: keys.discord,
+  shardArgs: [ debugMode.toString() ]
+};
 
-shardingManager.spawn();
+const shardManager = new ShardingManager(`./build/src/shard.js`, options);
+
+shardManager.on(`shardCreate`, shard => console.log(`Launched shard ${shard.id}`));
+
+shardManager.spawn();
