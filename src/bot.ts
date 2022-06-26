@@ -1,6 +1,6 @@
 import { Client, Intents } from 'discord.js';
 import Logger from './util/logger';
-import keys from '../cfg/keys.json';
+import keys from '../config/keys.json';
 
 export const logger = new Logger();
 
