@@ -1,0 +1,7 @@
+{
+  "loginLimit": {
+    "warning": 5,
+    "shutdown": 30,
+    "absolute": 999
+  }
+}
