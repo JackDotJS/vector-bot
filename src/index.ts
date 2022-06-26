@@ -111,7 +111,7 @@ logger.verbose(`:)`);
 interface ShardMessage {
   type: LoggingLevel,
   content: string
-};
+}
 
 const options = {
   token: keys.discord,
@@ -120,7 +120,7 @@ const options = {
 
 const shardManager = new ShardingManager(`./build/src/shard.js`, options);
 
-shardingManager.on(`shardCreate`, shard => {
+shardManager.on(`shardCreate`, shard => {
   logger.log(`Launched shard ${shard.id}`);
 
   const shardID = shard.id + 1;

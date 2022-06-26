@@ -3,9 +3,10 @@
 import chalk from "chalk";
 import { DateTime } from "luxon";
 import { inspect } from "util";
-import { appendFile } from "fs/promises";
+import { appendFile, readdir } from "fs/promises";
+import { zip } from "compressing";
 
-type LogType = `all` | `archive` | `crash`;
+export type LoggingLevel = `log` | `warn` | `error` | `fatal` | `verbose`;
 interface LoggerOptions {
   writeToFile?: boolean
 }
@@ -106,11 +107,15 @@ export default class Logger {
     return console.log(`${this.timestamp} ${chalk.gray(`verbose:`)} ${chalk.gray(info)} `);
   }
 
-  private async appendToLog(log: LogType, content: string): Promise<void> {
+  private async appendToLog(level: LoggingLevel, content: string): Promise<void> {
     if (!this.writeToFile) return;
 
-    const toWrite = `${this.timestamp} ${log.toUpperCase()} ${content}`;
-    await appendFile(`./logs/${log}/`, toWrite);
+    const toWrite = `${this.timestamp} ${level.toUpperCase()} ${content}`;
+    await appendFile(`./logs/${level}/`, toWrite);
   }
+
+  // private async compressLogs(): Promise<void> {
+    
+  // }
 
 }
