@@ -1,9 +1,15 @@
+/**
+ * VECTOR :: INITIALIZATION SCRIPT
+ */
+
 import * as fs from 'fs';
 import * as util from 'util';
 import * as pkg from '../package.json';
-
+import * as cfg from '../config/bot.json';
 
 process.title = `Vector Bot ${pkg.version}`;
+
+let logins = 1;
 
 // create directories that may or may not exist because Git(TM)
 const mkdirs = [
@@ -20,6 +26,8 @@ for (const item of mkdirs) {
   }
 }
 
+// check login count, to prevent API spam in the case of a boot loop
+
 try {
   // try making file if it does not exist
   const data = {
@@ -29,6 +37,7 @@ try {
 
   fs.writeFileSync(`./data/resets`, JSON.stringify(data), { encoding: `utf8`, flag: `ax` });
 }
+
 catch (e: any) {
   if (e.code !== `EEXIST`) {
     throw e;
@@ -59,9 +68,20 @@ catch (e: any) {
 
   json.logins++;
 
+  logins = json.logins;
+
   console.log(`login count: ${json.logins}`);
   
   fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
+}
+
+if (logins > cfg.loginLimit.warning) {
+  console.log(`warning: lots of resets`);
+}
+
+if (logins > cfg.loginLimit.shutdown) {
+  console.log(`error: too many resets`);
+  process.exit(1);
 }
 
 // we did it reddit
