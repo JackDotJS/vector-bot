@@ -155,4 +155,4 @@ data
 .local
 
 # Vector: Private Files
-cfg/keys.json
+config/keys.json
