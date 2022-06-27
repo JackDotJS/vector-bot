@@ -123,32 +123,30 @@ const shardManager = new ShardingManager(`./build/src/shard.js`, options);
 shardManager.on(`shardCreate`, shard => {
   logger.log(`Launched shard ${shard.id}`);
 
-  const shardID = shard.id + 1;
-
   shard.on(`message`, (message: ShardMessage) => {
     switch (message.type) {
       case `log`: {
-        logger.log(`[${shardID}] ${message.content}`);
+        logger.log(`[shard ${shard.id}] ${message.content}`);
         break;
       }
       case `warn`: {
-        logger.warn(`[${shardID}] ${message.content}`);
+        logger.warn(`[shard ${shard.id}] ${message.content}`);
         break;
       }
       case `error`: {
-        logger.error(`[${shardID}] ${message.content}`);
+        logger.error(`[shard ${shard.id}] ${message.content}`);
         break;
       }
       case `fatal`: {
-        logger.fatal(`[${shardID}] ${message.content}`);
+        logger.fatal(`[shard ${shard.id}] ${message.content}`);
         break;
       }
       case `verbose`: {
-        logger.verbose(`[${shardID}] ${message.content}`);
+        logger.verbose(`[shard ${shard.id}] ${message.content}`);
         break;
       }
       default: {
-        logger.warn(`[Master] Unexpected message from shard ${shardID}: ${message}`);
+        logger.warn(`[Master] Unexpected message from shard ${shard.id}: ${message}`);
         break;
       }
     }
