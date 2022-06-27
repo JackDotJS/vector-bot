@@ -7,19 +7,28 @@ import { appendFile, readdir } from "fs/promises";
 import { zip } from "compressing";
 
 export type LoggingLevel = `log` | `warn` | `error` | `fatal` | `verbose`;
+
+// https://cdn.discordapp.com/attachments/275344239850946561/990825655082049586/unknown.png
+type strange = string;
+
 interface LoggerOptions {
-  writeToFile?: boolean
+  writeToFile?: boolean,
+  filePath?: strange
 }
 
 export default class Logger {
 
   private readonly writeToFile = true; // Write to log files by default
+  private readonly filePath: string = ``;
 
   constructor(options?: LoggerOptions) {
     if (options?.writeToFile) {
       this.writeToFile = options.writeToFile;
     }
     
+    if (options?.filePath) {
+      this.filePath = options.filePath;
+    }
   }
 
   /**
