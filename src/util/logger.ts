@@ -13,7 +13,6 @@ interface LoggerOptions {
 
 export default class Logger {
 
-  private readonly timestamp: string = chalk.grey(`[${DateTime.now().toLocaleString()}]`);
   private readonly writeToFile = true; // Write to log files by default
 
   constructor(options?: LoggerOptions) {
@@ -32,7 +31,7 @@ export default class Logger {
       return;
     }
     
-    return console.log(`${this.timestamp} ${chalk.blue(`info:`)} ${info} `);
+    return console.log(`${this.getTimestamp()} ${chalk.blue(`info:`)} ${info} `);
   }
 
   /**
@@ -44,7 +43,7 @@ export default class Logger {
       return;
     }
 
-    return console.warn(`${this.timestamp} ${chalk.yellow(`warn:`)} ${info} `);
+    return console.warn(`${this.getTimestamp()} ${chalk.yellow(`warn:`)} ${info} `);
   }
 
   /**
@@ -59,11 +58,11 @@ export default class Logger {
     if (info instanceof Error) {
       info = (info.stack ?? info.message)
         .split(`\n`)
-        .join(`\n${this.timestamp} ${chalk.red(`error:`)}`);
+        .join(`\n${this.getTimestamp()} ${chalk.red(`error:`)}`);
 
-      console.error(`${this.timestamp} ${chalk.red(`error:`)} ${info}`);
+      console.error(`${this.getTimestamp()} ${chalk.red(`error:`)} ${info}`);
     } else {
-      console.error(`${this.timestamp} ${chalk.red(`error:`)} ${info}`);
+      console.error(`${this.getTimestamp()} ${chalk.red(`error:`)} ${info}`);
     }
   }
 
@@ -79,11 +78,11 @@ export default class Logger {
     if (info instanceof Error) {
       info = (info.stack ?? info.message)
         .split(`\n`)
-        .join(`\n${this.timestamp} ${chalk.bgRed.white(`FATAL:`)}`);
+        .join(`\n${this.getTimestamp()} ${chalk.bgRed.white(`FATAL:`)}`);
 
-      console.error(`${this.timestamp} ${chalk.bgRed.white(`FATAL:`)} ${chalk.red(info)}`);
+      console.error(`${this.getTimestamp()} ${chalk.bgRed.white(`FATAL:`)} ${chalk.red(info)}`);
     } else {
-      console.error(`${this.timestamp} ${chalk.bgRed.white(`FATAL:`)} ${chalk.red(info)}`);
+      console.error(`${this.getTimestamp()} ${chalk.bgRed.white(`FATAL:`)} ${chalk.red(info)}`);
     }
   }
 
@@ -102,15 +101,15 @@ export default class Logger {
     if (info instanceof Error)
       info = (info.stack ?? info.message)
         .split(`\n`)
-        .join(`\n${this.timestamp} ${chalk.grey(`verbose:`)}`);
+        .join(`\n${this.getTimestamp()} ${chalk.grey(`verbose:`)}`);
 
-    return console.log(`${this.timestamp} ${chalk.gray(`verbose:`)} ${chalk.gray(info)} `);
+    return console.log(`${this.getTimestamp()} ${chalk.gray(`verbose:`)} ${chalk.gray(info)} `);
   }
 
   private async appendToLog(level: LoggingLevel, content: string): Promise<void> {
     if (!this.writeToFile) return;
 
-    const toWrite = `${this.timestamp} ${level.toUpperCase()} ${content}`;
+    const toWrite = `${this.getTimestamp()} ${level.toUpperCase()} ${content}`;
     await appendFile(`./logs/${level}/`, toWrite);
   }
 
@@ -118,4 +117,7 @@ export default class Logger {
     
   // }
 
+  private getTimestamp(): string {
+    return chalk.grey(DateTime.utc().toFormat(`[yyyy-MM-dd HH:mm:ss.SSS]`));
+  }
 }
