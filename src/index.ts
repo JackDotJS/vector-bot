@@ -1,7 +1,9 @@
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { ShardingManager } from 'discord.js';
 // import * as util from 'util';
 import { version } from '../package.json';
 import isInterface from './util/isInterface';
+import keys from '../cfg/keys.json';
 
 process.title = `Vector Bot ${version}`;
 
@@ -74,3 +76,8 @@ try {
 
 // we did it reddit
 console.log(`:)`);
+
+const shardingManager = new ShardingManager(`./build/src/bot.js`, { token: keys.discord });
+shardingManager.on(`shardCreate`, shard => console.log(`Launched shard ${shard.id}`));
+
+shardingManager.spawn();

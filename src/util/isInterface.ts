@@ -6,6 +6,6 @@
  * @param obj Object to check
  * @param property Property that exists on T
  */
-export default function isInterface<T>(obj: any, property: any): obj is T {
+export default function isInterface<T>(obj: any, property: keyof T): obj is T {
   return property in obj;
 }
