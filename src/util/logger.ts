@@ -19,7 +19,7 @@ interface LoggerOptions {
 export default class Logger {
 
   private readonly writeToFile = true; // Write to log files by default
-  private readonly filePath: string = ``;
+  private readonly filePath: string = `./logs/`;
 
   constructor(options?: LoggerOptions) {
     if (options?.writeToFile) {
