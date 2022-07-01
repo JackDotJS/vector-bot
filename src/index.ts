@@ -16,8 +16,6 @@ process.title = `Vector Bot ${pkg.version}`;
 const debugMode = process.argv.includes(`--debug`) || process.argv.includes(`-d`);
 let logins = 1;
 
-const logger = new Logger();
-
 // create directories that may or may not exist because Git(TM)
 const mkdirs = [
   `./.local`,
@@ -32,6 +30,8 @@ for (const item of mkdirs) {
     fs.mkdirSync(item, { recursive: true });
   }
 }
+
+Logger.compressLogs(); // Compress the log files before instantiating a new Logger class as to clean up any files from a previous session
 
 // check login count, to prevent API spam in the case of a boot loop
 interface ErrorWithCode extends Error {
@@ -64,7 +64,7 @@ try {
   // Attempt to parse as JSON.
   // If the JSON data is corrupt, it'll be up to the user to fix it.
   // Simply overwriting with default values could cause problems down the line.
-    json = JSON.parse(oldData);
+  json = JSON.parse(oldData);
 
   // if it's been more than an hour, reset the login count
   const now = new Date().getTime();
@@ -74,32 +74,34 @@ try {
   }
 
   json.logins++;
-  
+
   logins = json.logins;
 
   fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
 }
 
+const logger = new Logger({ loginCount: logins });
+
 // check login count before proceeding
 if (debugMode) {
   if (logins === cfg.loginLimit.absolute) {
-    logger.fatal(`error: too many resets`);
+    logger.fatal(`too many resets`);
     process.exit(1);
   }
 } else {
   if (logins > cfg.loginLimit.warning) {
-    logger.warn(`warning: lots of resets`);
+    logger.warn(`lots of resets`);
   }
-  
+
   if (logins > cfg.loginLimit.shutdown) {
-    logger.fatal(`error: too many resets`);
+    logger.fatal(`too many resets`);
     process.exit(1);
   }
 }
 
 // we did it reddit
 logger.verbose(`:)`);
-  
+
 interface ShardMessage {
   type: LoggingLevel,
   content: string
@@ -107,7 +109,7 @@ interface ShardMessage {
 
 const options = {
   token: keys.discord,
-  shardArgs: [ debugMode.toString() ]
+  shardArgs: [debugMode.toString()]
 };
 
 const shardManager = new ShardingManager(`./build/src/shard.js`, options);
@@ -118,23 +120,23 @@ shardManager.on(`shardCreate`, shard => {
   shard.on(`message`, (message: ShardMessage) => {
     switch (message.type) {
       case `log`: {
-        logger.log(`[shard ${shard.id}] ${message.content}`);
+        logger.log(`[Shard ${shard.id}] ${message.content}`);
         break;
       }
       case `warn`: {
-        logger.warn(`[shard ${shard.id}] ${message.content}`);
+        logger.warn(`[Shard ${shard.id}] ${message.content}`);
         break;
       }
       case `error`: {
-        logger.error(`[shard ${shard.id}] ${message.content}`);
+        logger.error(`[Shard ${shard.id}] ${message.content}`);
         break;
       }
       case `fatal`: {
-        logger.fatal(`[shard ${shard.id}] ${message.content}`);
+        logger.fatal(`[Shard ${shard.id}] ${message.content}`);
         break;
       }
       case `verbose`: {
-        logger.verbose(`[shard ${shard.id}] ${message.content}`);
+        logger.verbose(`[Shard ${shard.id}] ${message.content}`);
         break;
       }
       default: {

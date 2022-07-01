@@ -17,7 +17,6 @@ const client = new Client({
 
 client.login(keys.discord)
   .then(() => {
-    logger.verbose(client.shard?.ids);
     logger.log(`Successfully logged in as ${client.user?.tag}! Shard: [${client.shard?.ids.map(s => s + 1).join(`, `)}/${client.shard?.count}]`);
     process.title = `Vector Shard ${client.shard?.ids.map(s => s + 1).join(`, `)}/${client.shard?.count}`;
   })
