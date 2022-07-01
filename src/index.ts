@@ -61,16 +61,10 @@ try {
     time: 0
   };
 
-  try {
-    // attempt to parse as JSON.
-    // if the data is corrupt or otherwise invalid, we'll simply overwrite it with some default values.
+  // Attempt to parse as JSON.
+  // If the JSON data is corrupt, it'll be up to the user to fix it.
+  // Simply overwriting with default values could cause problems down the line.
     json = JSON.parse(oldData);
-
-    logger.verbose(`filedata successful read`);
-  }
-  catch (je) { 
-    logger.warn(`JSON data was invalid or corrupted. Overwriting with default values...`);
-  }
 
   // if it's been more than an hour, reset the login count
   const now = new Date().getTime();
@@ -82,8 +76,6 @@ try {
   json.logins++;
   
   logins = json.logins;
-
-  logger.verbose(`login count: ${json.logins}`);
 
   fs.writeFileSync(`./data/resets`, JSON.stringify(json), { encoding: `utf8` });
 }
